@@ -171,18 +171,23 @@
 
       <p id="storageStatus" class="prototype-warning">Nexus database status: LOCAL FALLBACK. Connect the private MuSyChEN–626 Google Sheet before invitations are sent.</p>
 
-      <div class="recognition-center locked">
+      <div id="recognitionCenter" class="recognition-center offline">
         <div class="recognition-statusbar">
           <span>VARIANT RECOGNITION CENTER</span>
-          <span class="locked-status">● CLOSED</span>
+          <span id="recognitionStatus" class="offline-status">● OFFLINE</span>
         </div>
 
-        <div class="recognition-body">
+        <div id="recognitionOffline" class="recognition-body">
           <p class="section-kicker">IDENTITY DOCUMENTATION FACILITY</p>
           <h2>VARIANT RECOGNITION CENTER</h2>
 
-          <p class="recognition-warning">ACCESS DENIED</p>
-          <p class="recognition-reason">CONVERGENCE PROXIMITY BELOW REQUIRED THRESHOLD</p>
+          <p class="recognition-warning">CRITICAL SPACETIME INSTABILITY DETECTED</p>
+          <p class="recognition-reason">CROSS-REALITY IDENTIFICATION CURRENTLY IMPOSSIBLE</p>
+
+          <p class="recognition-copy">
+            Incoming Variant signatures are overlapping with their MuSyChEN–626 counterparts.
+            The Nexus cannot yet reconstruct stable cross-reality identities.
+          </p>
 
           <div class="document-list">
             <div class="document-row">
@@ -195,28 +200,87 @@
             </div>
             <div class="document-row">
               <span>VARIANT DECLARATION</span>
-              <strong>PENDING</strong>
+              <strong>UNRESOLVED</strong>
             </div>
             <div class="document-row">
               <span>SPECIES CLASSIFICATION</span>
-              <strong>PENDING</strong>
+              <strong>UNRESOLVED</strong>
             </div>
             <div class="document-row">
               <span>INTERDIMENSIONAL PASSPORT</span>
-              <strong>PENDING</strong>
+              <strong>CANNOT BE ISSUED</strong>
             </div>
           </div>
 
           <div class="pending-terminal">
-            <span>DOCUMENTATION WINDOW</span>
-            <strong>PENDING CALCULATION<span class="blink">_</span></strong>
+            <span>NEXT RECOGNITION ATTEMPT</span>
+            <strong>AWAITING CONVERGENCE STABILISATION<span class="blink">_</span></strong>
           </div>
 
           <p class="recognition-copy">
-            Cross-reality identity records are currently incomplete. Your temporary Nexus ID will be required when the Recognition Center opens. Final crossing confirmation, Variant declaration and species classification will become available as the Convergence approaches.
+            Further calculations are required. Recognition procedures will resume only when
+            the Convergence is sufficiently close for Variant signatures to stabilise.
           </p>
 
-          <button class="locked-button" type="button" disabled>[ RECOGNITION OFFLINE ]</button>
+          <button class="locked-button" type="button" disabled>[ RECOGNITION SYSTEM OFFLINE ]</button>
+        </div>
+
+        <div id="recognitionOperational" class="recognition-body is-hidden">
+          <p class="section-kicker operational-kicker">IDENTITY SIGNAL STABILISED</p>
+          <h2>VARIANT RECOGNITION CENTER</h2>
+
+          <p class="operational-message">RECOGNITION PROCEDURES AVAILABLE</p>
+
+          <form id="phase2Form">
+            <label>
+              NEXUS ID
+              <input id="phase2NexusId" type="text" placeholder="VAR–626–XXXX" required />
+            </label>
+
+            <div class="question">
+              <p>FINAL CROSSING STATUS</p>
+              <div class="choice-grid">
+                <label class="choice">
+                  <input type="radio" name="crossingStatus" value="I WILL CONVERGE" required>
+                  <span>I WILL CONVERGE</span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="crossingStatus" value="I WILL NOT CONVERGE">
+                  <span>I WILL NOT CONVERGE</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="variantDeclarationFields">
+              <label>
+                VARIANT DECLARATION
+                <input id="variantDeclaration" type="text" placeholder="Who will cross the Nexus?" />
+              </label>
+
+              <label>
+                SPECIES CLASSIFICATION
+                <input id="speciesClassification" type="text" placeholder="FAIRY / HUMAN / WITCH / ANDROID / OTHER..." />
+              </label>
+            </div>
+
+            <label class="privacy-consent">
+              <input id="phase2Consent" type="checkbox" required>
+              <span>I understand that these details will be used to confirm attendance and prepare the Interdimensional Passport.</span>
+            </label>
+
+            <button type="submit" class="primary-button">[ COMPLETE RECOGNITION ]</button>
+          </form>
+
+          <div id="phase2Success" class="clearance-card is-hidden">
+            <p class="section-kicker">VARIANT RECOGNISED</p>
+            <h3>IDENTITY STABILISED</h3>
+            <p>Your recognition record has been transmitted.</p>
+            <p class="micro">NEXUS CLEARANCE // LEVEL 02</p>
+          </div>
+
+          <p id="phase2StorageStatus" class="prototype-warning">
+            Recognition database status: DORMANT ENDPOINT.
+          </p>
         </div>
       </div>
     </section>

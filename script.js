@@ -17,11 +17,19 @@ const clearanceCard = $("#clearanceCard");
   Leave blank while testing locally.
 */
 const GOOGLE_SHEETS_ENDPOINT = "";
-// This endpoint now points only to the Phase 1 attendance registry.
-// December's Variant Recognition Center will use a separate registry.
+// Phase 1 registry endpoint.
+
+const PHASE2_GOOGLE_SHEETS_ENDPOINT = "";
+// Phase 2 registry endpoint. Leave blank until the Recognition Center goes live.
+
+// Change ONLY this value when the second phase is ready:
+const VARIANT_RECOGNITION_CENTER = "OFFLINE";
+// Allowed values: "OFFLINE" or "OPERATIONAL".
 
 let audioEnabled = true;
 let audioCtx, master, humOsc, humGain;
+let ambientNodes = {};
+let backgroundGlitchInterval = null;
 
 const compilationBursts = [
   [
@@ -54,56 +62,139 @@ const compilationBursts = [
 function initAudio() {
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   master = audioCtx.createGain();
-  master.gain.value = .38; // louder than v0.3
+  master.gain.value = .48;
   master.connect(audioCtx.destination);
 
-  humOsc = audioCtx.createOscillator();
-  humGain = audioCtx.createGain();
-  humOsc.type = "sine";
-  humOsc.frequency.value = 56;
-  humGain.gain.value = .14;
-  humOsc.connect(humGain).connect(master);
-  humOsc.start();
+  const now = audioCtx.currentTime;
 
-  // Subtle higher harmonic for a more dimensional hum
-  const overtone = audioCtx.createOscillator();
-  const overtoneGain = audioCtx.createGain();
-  overtone.type = "triangle";
-  overtone.frequency.value = 112;
-  overtoneGain.gain.value = .025;
-  overtone.connect(overtoneGain).connect(master);
-  overtone.start();
+  // Main cosmic bed
+  const droneBus = audioCtx.createGain();
+  droneBus.gain.value = 0.16;
+  droneBus.connect(master);
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 950;
+  filter.Q.value = 0.6;
+  filter.connect(droneBus);
+
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const osc3 = audioCtx.createOscillator();
+  osc1.type = "sine";
+  osc2.type = "triangle";
+  osc3.type = "sine";
+  osc1.frequency.value = 54;   // deep space hum
+  osc2.frequency.value = 81;   // cinematic fifth-like lift
+  osc3.frequency.value = 108;  // overtone / organ-like body
+
+  const g1 = audioCtx.createGain(); g1.gain.value = 0.42;
+  const g2 = audioCtx.createGain(); g2.gain.value = 0.16;
+  const g3 = audioCtx.createGain(); g3.gain.value = 0.10;
+
+  osc1.connect(g1).connect(filter);
+  osc2.connect(g2).connect(filter);
+  osc3.connect(g3).connect(filter);
+
+  // Slow movement
+  const lfo = audioCtx.createOscillator();
+  const lfoGain = audioCtx.createGain();
+  lfo.type = "sine";
+  lfo.frequency.value = 0.08;
+  lfoGain.gain.value = 130;
+  lfo.connect(lfoGain).connect(filter.frequency);
+
+  const lfoAmp = audioCtx.createOscillator();
+  const lfoAmpGain = audioCtx.createGain();
+  lfoAmp.type = "sine";
+  lfoAmp.frequency.value = 0.11;
+  lfoAmpGain.gain.value = 0.05;
+  lfoAmp.connect(lfoAmpGain).connect(droneBus.gain);
+
+  // Soft cosmic shimmer
+  const shimmer = audioCtx.createOscillator();
+  const shimmerGain = audioCtx.createGain();
+  const shimmerFilter = audioCtx.createBiquadFilter();
+  shimmer.type = "triangle";
+  shimmer.frequency.value = 320;
+  shimmerGain.gain.value = 0.006;
+  shimmerFilter.type = "bandpass";
+  shimmerFilter.frequency.value = 1200;
+  shimmerFilter.Q.value = 1.6;
+  shimmer.connect(shimmerGain).connect(shimmerFilter).connect(master);
+
+  // Slow pulse like a distant signal
+  const pulseOsc = audioCtx.createOscillator();
+  const pulseGain = audioCtx.createGain();
+  pulseOsc.type = "sine";
+  pulseOsc.frequency.value = 162;
+  pulseGain.gain.value = 0;
+  pulseOsc.connect(pulseGain).connect(master);
+
+  function pulseSequence() {
+    if (!audioEnabled || !audioCtx) return;
+    const t = audioCtx.currentTime;
+    pulseGain.gain.cancelScheduledValues(t);
+    pulseGain.gain.setValueAtTime(0.0001, t);
+    pulseGain.gain.exponentialRampToValueAtTime(0.028, t + 0.12);
+    pulseGain.gain.exponentialRampToValueAtTime(0.0001, t + 1.0);
+  }
+
+  // Periodic subtle pulses
+  const pulseInterval = setInterval(() => {
+    if (audioEnabled) pulseSequence();
+  }, 5200);
+
+  [osc1, osc2, osc3, lfo, lfoAmp, shimmer, pulseOsc].forEach(o => o.start(now));
+
+  ambientNodes = { pulseInterval, pulseSequence, droneBus, shimmerGain };
+
+  startBackgroundGlitches();
 }
 
-function blip(freq=420, duration=.045, gain=.055) {
+function startBackgroundGlitches() {
+  if (backgroundGlitchInterval) clearInterval(backgroundGlitchInterval);
+  backgroundGlitchInterval = setInterval(() => {
+    if (!audioEnabled || !audioCtx) return;
+    const chance = Math.random();
+    if (chance > 0.35) {
+      glitchBurst(chance > 0.82 ? 6 : 3);
+    }
+  }, 6500);
+}
+
+function blip(freq=420, duration=.045, gain=.065) {
   if (!audioEnabled || !audioCtx) return;
   const o = audioCtx.createOscillator();
   const g = audioCtx.createGain();
-  o.type = Math.random() > .68 ? "square" : "sine";
-  o.frequency.value = freq + Math.random()*120;
+  const f = audioCtx.createBiquadFilter();
+  o.type = Math.random() > .55 ? "square" : "sawtooth";
+  o.frequency.value = freq + Math.random()*180;
+  f.type = "bandpass";
+  f.frequency.value = Math.max(250, freq * 1.7);
+  f.Q.value = 1.3;
   g.gain.setValueAtTime(gain, audioCtx.currentTime);
   g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
-  o.connect(g).connect(master);
+  o.connect(f).connect(g).connect(master);
   o.start();
   o.stop(audioCtx.currentTime + duration);
 }
 
 function glitchBurst(intensity=5) {
   if (!audioEnabled || !audioCtx) return;
+  const spacing = 18 + Math.random()*18;
   for (let i=0;i<intensity;i++) {
-    setTimeout(()=>blip(150+i*95,.025,.035),i*24);
+    setTimeout(() => {
+      blip(120 + i*105 + Math.random()*70, .018 + Math.random()*0.03, .035 + Math.random()*0.02);
+      if (Math.random() > 0.55) {
+        blip(900 + Math.random()*700, .01 + Math.random()*0.015, .02);
+      }
+    }, i*spacing);
   }
 }
 
-function appendInstantLine(item) {
-  const line = document.createElement("div");
-  if (item.c) line.className = item.c;
-  line.textContent = item.t;
-  compileOutput.appendChild(line);
-}
-
 async function runCompilation() {
-  // v0.4: rapid compilation in glitch bursts instead of slow typewriter.
+  // v0.8: rapid compilation in glitch bursts instead of slow typewriter.
   for (let i=0;i<compilationBursts.length;i++) {
     const burst = compilationBursts[i];
 
@@ -117,13 +208,13 @@ async function runCompilation() {
       for (const ch of item.t) {
         shown += ch;
         line.textContent = shown + "█";
-        if (shown.length % 4 === 0) blip(390,.02,.02);
+        if (shown.length % 4 === 0) blip(300 + Math.random()*120,.018,.022);
         await new Promise(r=>setTimeout(r,7));
       }
       line.textContent = item.t;
       appendInstantLine(burst[1]);
     } else {
-      glitchBurst(i === 4 ? 8 : 4);
+      glitchBurst(i === 4 ? 8 : 5);
       document.body.classList.add("micro-glitch");
       burst.forEach(appendInstantLine);
       await new Promise(r=>setTimeout(r,65));
@@ -148,8 +239,8 @@ initializeButton.addEventListener("click", () => {
 
 $("#audioToggle").addEventListener("click", (e) => {
   audioEnabled = !audioEnabled;
-  e.target.textContent = `AUDIO: ${audioEnabled ? "ON" : "OFF"}`;
-  if (master) master.gain.setTargetAtTime(audioEnabled ? .38 : 0, audioCtx.currentTime, .06);
+  e.target.textContent = `AUDIO: ${audioEnabled ? "COSMIC ON" : "OFF"}`;
+  if (master && audioCtx) master.gain.setTargetAtTime(audioEnabled ? .48 : 0, audioCtx.currentTime, .08);
 });
 
 function updateClock(){
@@ -161,7 +252,7 @@ setInterval(updateClock,1000);
 accessButton.addEventListener("click", () => {
   registry.classList.remove("is-hidden");
   registry.scrollIntoView({behavior:"smooth",block:"start"});
-  glitchBurst();
+  glitchBurst(5);
 });
 
 function goStep(n){
@@ -251,6 +342,98 @@ variantForm.addEventListener("submit", async (e)=>{
   clearanceCard.scrollIntoView({behavior:"smooth",block:"center"});
   glitchBurst(8);
 });
+
+
+// ---------- DORMANT PHASE 2 ----------
+function configureRecognitionCenter() {
+  const center = $("#recognitionCenter");
+  const status = $("#recognitionStatus");
+  const offline = $("#recognitionOffline");
+  const operational = $("#recognitionOperational");
+
+  if (!center || !status || !offline || !operational) return;
+
+  if (VARIANT_RECOGNITION_CENTER === "OPERATIONAL") {
+    center.classList.remove("offline");
+    center.classList.add("operational");
+    status.textContent = "● OPERATIONAL";
+    status.classList.remove("offline-status");
+    status.classList.add("online-status");
+    offline.classList.add("is-hidden");
+    operational.classList.remove("is-hidden");
+  } else {
+    center.classList.add("offline");
+    center.classList.remove("operational");
+    status.textContent = "● OFFLINE";
+    status.classList.add("offline-status");
+    status.classList.remove("online-status");
+    offline.classList.remove("is-hidden");
+    operational.classList.add("is-hidden");
+  }
+}
+configureRecognitionCenter();
+
+const phase2Form = $("#phase2Form");
+if (phase2Form) {
+  const crossingRadios = $$('input[name="crossingStatus"]');
+  const declarationFields = $("#variantDeclarationFields");
+
+  crossingRadios.forEach(radio => {
+    radio.addEventListener("change", () => {
+      const status = phase2Form.elements.crossingStatus?.value || "";
+      const willConverge = status === "I WILL CONVERGE";
+      declarationFields.style.opacity = willConverge ? "1" : ".35";
+      $("#variantDeclaration").required = willConverge;
+      $("#speciesClassification").required = willConverge;
+    });
+  });
+
+  phase2Form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (VARIANT_RECOGNITION_CENTER !== "OPERATIONAL") return;
+
+    const crossingStatus = phase2Form.elements.crossingStatus?.value || "";
+    const data = {
+      timestamp: new Date().toISOString(),
+      nexusId: $("#phase2NexusId").value.trim().toUpperCase(),
+      crossingStatus,
+      variantDeclaration: crossingStatus === "I WILL CONVERGE"
+        ? $("#variantDeclaration").value.trim()
+        : "",
+      species: crossingStatus === "I WILL CONVERGE"
+        ? $("#speciesClassification").value.trim()
+        : ""
+    };
+
+    localStorage.setItem("nexus626_variant_recognition", JSON.stringify(data));
+
+    let remoteSent = false;
+    if (PHASE2_GOOGLE_SHEETS_ENDPOINT) {
+      try {
+        await fetch(PHASE2_GOOGLE_SHEETS_ENDPOINT, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {"Content-Type":"text/plain;charset=utf-8"},
+          body: JSON.stringify(data)
+        });
+        remoteSent = true;
+      } catch (err) {
+        console.error("Phase 2 transmission failed:", err);
+      }
+    }
+
+    phase2Form.classList.add("is-hidden");
+    $("#phase2Success").classList.remove("is-hidden");
+
+    const status = $("#phase2StorageStatus");
+    status.textContent = remoteSent
+      ? "Recognition database status: RECORD TRANSMITTED TO PRIVATE REGISTRY."
+      : "Recognition database status: LOCAL FALLBACK — remote registry not configured or unreachable.";
+
+    glitchBurst(8);
+  });
+}
 
 // Falling code
 const canvas = $("#codeRain");

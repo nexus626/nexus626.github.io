@@ -11,54 +11,76 @@ const registry = $("#registry");
 const variantForm = $("#variantForm");
 const clearanceCard = $("#clearanceCard");
 
+/*
+  GOOGLE SHEETS CONNECTION
+  Paste the deployed Apps Script /exec URL between the quotes below.
+  Leave blank while testing locally.
+*/
+const GOOGLE_SHEETS_ENDPOINT = "";
+// This endpoint now points only to the Phase 1 attendance registry.
+// December's Variant Recognition Center will use a separate registry.
+
 let audioEnabled = true;
 let audioCtx, master, humOsc, humGain;
 
-const compilation = [
-  {t:"[00:00:00.000] // NEXUS KERNEL INITIALISING", c:"system"},
-  {t:"[00:00:00.184] loading reality_map.bin ................ OK"},
-  {t:"[00:00:00.416] mounting spacetime coordinates ......... OK"},
-  {t:"[00:00:00.751] resolving origin universe .............. MuSyChEN–626", c:"violet"},
-  {t:"[00:00:01.044] checksum 626: A7F9-11C0-Δ441 ............ VALID"},
-  {t:"[00:00:01.337] scanning adjacent branches .............."},
-  {t:"[00:00:01.822] branch_017 detected"},
-  {t:"[00:00:02.006] branch_108 detected"},
-  {t:"[00:00:02.191] branch_???? detected", c:"critical"},
-  {t:"[00:00:02.442] WARNING: variant count exceeds model capacity", c:"critical"},
-  {t:"[00:00:02.788] establishing NEXUS handshake ........... ESTABLISHED", c:"system"},
-  {t:"[00:00:03.184] calculating dimensional integrity ....... 41.7%"},
-  {t:"[00:00:03.503] recalculating ............................ 29.3%", c:"critical"},
-  {t:"[00:00:03.884] temporal boundary degradation detected", c:"critical"},
-  {t:"[00:00:04.229] compiling incoming transmission ........."},
-  {t:"[00:00:04.611] decrypting sender signature ............. UNKNOWN"},
-  {t:"[00:00:05.023] recipient signature ..................... MATCH FOUND", c:"system"},
-  {t:"[00:00:05.412] WARNING: CROSS-REALITY IDENTITY COLLISION", c:"critical"},
-  {t:"[00:00:05.852] preparing visual layer .................. OK"},
-  {t:"[00:00:06.211] preparing message ....................... OK"},
-  {t:"[00:00:06.488] TRANSMISSION COMPILED.", c:"system"},
+const compilationBursts = [
+  [
+    {t:"[00:00:00.000] // NEXUS KERNEL INITIALISING", c:"system"},
+    {t:"[00:00:00.081] loading reality_map.bin ................ OK"},
+  ],
+  [
+    {t:"[00:00:00.194] resolving origin universe .............. MuSyChEN–626", c:"violet"},
+    {t:"[00:00:00.271] scanning adjacent reality branches ....."},
+    {t:"[00:00:00.338] branch_017 / branch_108 / branch_????", c:"critical"},
+  ],
+  [
+    {t:"[00:00:00.471] WARNING: variant count exceeds model capacity", c:"critical"},
+    {t:"[00:00:00.533] establishing NEXUS handshake ........... ESTABLISHED", c:"system"},
+  ],
+  [
+    {t:"[00:00:00.682] dimensional integrity ................... 29.3%", c:"critical"},
+    {t:"[00:00:00.741] temporal boundary degradation detected", c:"critical"},
+    {t:"[00:00:00.799] recipient signature ..................... MATCH FOUND", c:"system"},
+  ],
+  [
+    {t:"[00:00:00.928] WARNING: CROSS-REALITY IDENTITY COLLISION", c:"critical"},
+    {t:"[00:00:00.986] compiling incoming transmission ........."},
+  ],
+  [
+    {t:"[00:00:01.121] TRANSMISSION COMPILED.", c:"system"},
+  ]
 ];
 
 function initAudio() {
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   master = audioCtx.createGain();
-  master.gain.value = .20;
+  master.gain.value = .38; // louder than v0.3
   master.connect(audioCtx.destination);
 
   humOsc = audioCtx.createOscillator();
   humGain = audioCtx.createGain();
   humOsc.type = "sine";
   humOsc.frequency.value = 56;
-  humGain.gain.value = .10;
+  humGain.gain.value = .14;
   humOsc.connect(humGain).connect(master);
   humOsc.start();
+
+  // Subtle higher harmonic for a more dimensional hum
+  const overtone = audioCtx.createOscillator();
+  const overtoneGain = audioCtx.createGain();
+  overtone.type = "triangle";
+  overtone.frequency.value = 112;
+  overtoneGain.gain.value = .025;
+  overtone.connect(overtoneGain).connect(master);
+  overtone.start();
 }
 
-function blip(freq=420, duration=.045, gain=.045) {
+function blip(freq=420, duration=.045, gain=.055) {
   if (!audioEnabled || !audioCtx) return;
   const o = audioCtx.createOscillator();
   const g = audioCtx.createGain();
-  o.type = Math.random() > .7 ? "square" : "sine";
-  o.frequency.value = freq + Math.random()*100;
+  o.type = Math.random() > .68 ? "square" : "sine";
+  o.frequency.value = freq + Math.random()*120;
   g.gain.setValueAtTime(gain, audioCtx.currentTime);
   g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
   o.connect(g).connect(master);
@@ -66,44 +88,58 @@ function blip(freq=420, duration=.045, gain=.045) {
   o.stop(audioCtx.currentTime + duration);
 }
 
-function glitchBurst() {
+function glitchBurst(intensity=5) {
   if (!audioEnabled || !audioCtx) return;
-  for (let i=0;i<4;i++) setTimeout(()=>blip(180+i*90,.025,.025),i*35);
+  for (let i=0;i<intensity;i++) {
+    setTimeout(()=>blip(150+i*95,.025,.035),i*24);
+  }
 }
 
-async function typeLine(text, cls="") {
+function appendInstantLine(item) {
   const line = document.createElement("div");
-  if (cls) line.className = cls;
-  const cursor = document.createElement("span");
-  cursor.className = "cursor";
-  line.appendChild(cursor);
+  if (item.c) line.className = item.c;
+  line.textContent = item.t;
   compileOutput.appendChild(line);
-
-  let shown = "";
-  for (let i=0;i<text.length;i++) {
-    shown += text[i];
-    line.firstChild?.remove();
-    line.textContent = shown;
-    line.appendChild(cursor);
-    if (i % 3 === 0) blip(370 + (i%8)*18,.025,.018);
-    await new Promise(r=>setTimeout(r, 8 + Math.random()*13));
-  }
-  cursor.remove();
 }
 
 async function runCompilation() {
-  for (let i=0;i<compilation.length;i++) {
-    await typeLine(compilation[i].t, compilation[i].c || "");
-    if ([8,12,17].includes(i)) glitchBurst();
-    await new Promise(r=>setTimeout(r, 95));
+  // v0.4: rapid compilation in glitch bursts instead of slow typewriter.
+  for (let i=0;i<compilationBursts.length;i++) {
+    const burst = compilationBursts[i];
+
+    if (i === 0) {
+      // Only the very first line visibly types itself.
+      const item = burst[0];
+      const line = document.createElement("div");
+      line.className = item.c || "";
+      compileOutput.appendChild(line);
+      let shown = "";
+      for (const ch of item.t) {
+        shown += ch;
+        line.textContent = shown + "█";
+        if (shown.length % 4 === 0) blip(390,.02,.02);
+        await new Promise(r=>setTimeout(r,7));
+      }
+      line.textContent = item.t;
+      appendInstantLine(burst[1]);
+    } else {
+      glitchBurst(i === 4 ? 8 : 4);
+      document.body.classList.add("micro-glitch");
+      burst.forEach(appendInstantLine);
+      await new Promise(r=>setTimeout(r,65));
+      document.body.classList.remove("micro-glitch");
+    }
+
+    await new Promise(r=>setTimeout(r, i < 2 ? 180 : 115));
   }
-  await new Promise(r=>setTimeout(r, 450));
+
+  await new Promise(r=>setTimeout(r,180));
   compileOutput.style.display = "none";
   finalTransmission.classList.remove("is-hidden");
-  glitchBurst();
+  glitchBurst(10);
 }
 
-initializeButton.addEventListener("click", async () => {
+initializeButton.addEventListener("click", () => {
   initAudio();
   bootGate.style.display = "none";
   site.classList.remove("hidden-site");
@@ -113,13 +149,14 @@ initializeButton.addEventListener("click", async () => {
 $("#audioToggle").addEventListener("click", (e) => {
   audioEnabled = !audioEnabled;
   e.target.textContent = `AUDIO: ${audioEnabled ? "ON" : "OFF"}`;
-  if (master) master.gain.setTargetAtTime(audioEnabled ? .20 : 0, audioCtx.currentTime, .06);
+  if (master) master.gain.setTargetAtTime(audioEnabled ? .38 : 0, audioCtx.currentTime, .06);
 });
 
 function updateClock(){
   $("#clock").textContent = new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
 }
-updateClock(); setInterval(updateClock,1000);
+updateClock();
+setInterval(updateClock,1000);
 
 accessButton.addEventListener("click", () => {
   registry.classList.remove("is-hidden");
@@ -134,30 +171,85 @@ function goStep(n){
 $$("[data-next]").forEach(b=>b.addEventListener("click",()=>goStep(Number(b.dataset.next))));
 $$("[data-back]").forEach(b=>b.addEventListener("click",()=>goStep(Number(b.dataset.back))));
 
-variantForm.addEventListener("submit",(e)=>{
+function createVariantId() {
+  const bytes = new Uint32Array(1);
+  crypto.getRandomValues(bytes);
+  return "VAR–626–" + (bytes[0] % (36**4)).toString(36).toUpperCase().padStart(4,"0");
+}
+
+async function submitToSheet(data) {
+  if (!GOOGLE_SHEETS_ENDPOINT) return {connected:false};
+
+  try {
+    /*
+      text/plain avoids a CORS preflight with Apps Script.
+      The Apps Script stores the JSON and the client doesn't need to expose credentials.
+    */
+    await fetch(GOOGLE_SHEETS_ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify(data)
+    });
+    return {connected:true};
+  } catch (err) {
+    console.error("Nexus database transmission failed:", err);
+    return {connected:false, error:true};
+  }
+}
+
+variantForm.addEventListener("submit", async (e)=>{
   e.preventDefault();
+
+  const selectedDates = $$('input[name="dates"]:checked').map(x => x.value);
+  const validation = $("#dateValidation");
+
+  if (selectedDates.length === 0) {
+    validation.classList.remove("is-hidden");
+    glitchBurst(5);
+    return;
+  }
+  validation.classList.add("is-hidden");
+
   const name = $("#guestName").value.trim() || "UNKNOWN";
-  const id = "VAR–626–" + Math.random().toString(36).slice(2,6).toUpperCase();
+  const id = createVariantId();
+
+  const dateFlags = {};
+  for (let d = 10; d <= 19; d++) {
+    const key = `2026-12-${String(d).padStart(2,"0")}`;
+    dateFlags[key] = selectedDates.includes(key);
+  }
 
   const data = {
-    id,
+    timestamp: new Date().toISOString(),
+    nexusId: id,
     name,
-    attendance: variantForm.elements.attendance?.value || "",
-    manifestation: variantForm.elements.manifestation?.value || "",
-    story: $("#variantStory").value.trim(),
-    diet: $$('input[name="diet"]:checked').map(x=>x.value),
-    foodNotes: $("#foodNotes").value.trim(),
-    savedAt: new Date().toISOString()
+    availableDates: selectedDates,
+    ...dateFlags,
+    dietaryRequirements: $$('input[name="diet"]:checked').map(x => x.value).join(", "),
+    foodNotes: $("#foodNotes").value.trim()
   };
-  localStorage.setItem("nexus626_variant_registration", JSON.stringify(data));
+
+  localStorage.setItem("nexus626_access_registry", JSON.stringify(data));
+
+  const result = await submitToSheet(data);
 
   variantForm.classList.add("is-hidden");
-  $(".progress-dots").classList.add("is-hidden");
   $("#variantId").textContent = id;
-  $("#clearanceName").textContent = `${name.toUpperCase()} // SIGNAL INDEXED`;
+  $("#clearanceName").textContent = `${name.toUpperCase()} // TEMPORAL SIGNATURE INDEXED`;
+
+  const status = $("#storageStatus");
+  if (result.connected) {
+    status.textContent = "Nexus database status: TEMPORAL SIGNATURE SENT TO PRIVATE ACCESS REGISTRY.";
+  } else if (GOOGLE_SHEETS_ENDPOINT) {
+    status.textContent = "Nexus database status: REMOTE LINK FAILED — LOCAL BACKUP CREATED.";
+  } else {
+    status.textContent = "Nexus database status: LOCAL FALLBACK — Google Sheet endpoint not configured yet.";
+  }
+
   clearanceCard.classList.remove("is-hidden");
   clearanceCard.scrollIntoView({behavior:"smooth",block:"center"});
-  glitchBurst();
+  glitchBurst(8);
 });
 
 // Falling code

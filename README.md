@@ -1,23 +1,39 @@
-# MuSyChEN–626 — v0.3
+# MuSyChEN–626 — v0.7
 
-Major update:
-- visible falling code around the central transmission
-- live compilation logs on both sides of the page
-- manual INITIALIZE TRANSMISSION gate so browsers allow audio
-- synthetic ambient hum + typing/glitch sound effects (no external audio file needed)
-- automatic terminal compilation sequence
-- final transmission appears only after compilation
-- ACCESS THE NEXUS opens a 3-step Variant Registration
-- temporary Variant ID generated after registration
+## Phase 1 — Temporal Compatibility Scan
 
-## IMPORTANT
-The registration form in this preview stores data ONLY in the visitor's browser (localStorage).
-Before the invitation is shared with guests, connect the form to a real backend/shared guest list
-(e.g. Google Sheets via Apps Script, Formspree, Supabase, etc.).
+The first invitation now collects:
+
+- Name
+- Every compatible date from 10–19 December 2026
+- Dietary protocol
+- Allergies / intolerances / food notes
+- Automatically generated Nexus ID
+
+There is **no attendance confirmation yet**.
+
+The private Google Sheet has one YES/blank column for every possible date, so the
+organisers can identify the date with the best overall availability and then
+confirm a location.
+
+## Phase 2 — Variant Recognition Center
+
+Once date and location are fixed, guests will use their Nexus ID and provide:
+
+- I WILL CONVERGE / I WILL NOT CONVERGE
+- Variant / character declaration
+- Species classification
+
+These Phase 2 data will be used to prepare the Interdimensional Passports.
 
 ## Deploy
-Replace the files in the root of the `nexus626.github.io` repository with:
+
+Replace in the root of `nexus626.github.io`:
+
 - index.html
 - styles.css
 - script.js
-- README.md
+
+Setup/reference files:
+- `google-sheets-phase1/`
+- `phase2-december/`

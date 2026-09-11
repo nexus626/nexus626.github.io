@@ -80,18 +80,12 @@
     <section id="registry" class="registry is-hidden">
       <div class="registry-head">
         <p class="section-kicker">NEXUS ACCESS GRANTED</p>
-        <h2>VARIANT REGISTRATION</h2>
-        <p>Your signal must be calibrated before the Convergence.</p>
-      </div>
-
-      <div class="progress-dots">
-        <button class="step-dot active" data-step="1">01</button>
-        <button class="step-dot" data-step="2">02</button>
-        <button class="step-dot" data-step="3">03</button>
+        <h2>CROSSING AUTHORIZATION</h2>
+        <p>Your presence signal must be registered before the Convergence.</p>
       </div>
 
       <form id="variantForm">
-        <fieldset class="form-step active" data-step="1">
+        <fieldset class="form-step active">
           <legend>01 // SIGNAL RESPONSE</legend>
 
           <label>
@@ -100,74 +94,131 @@
           </label>
 
           <div class="question">
-            <p>DO YOU INTEND TO CROSS INTO MuSyChEN–626?</p>
-            <div class="choice-grid">
-              <label class="choice"><input type="radio" name="attendance" value="I WILL CONVERGE" required><span>I WILL CONVERGE</span></label>
-              <label class="choice"><input type="radio" name="attendance" value="SIGNAL UNCERTAIN"><span>SIGNAL UNCERTAIN</span></label>
-              <label class="choice"><input type="radio" name="attendance" value="UNABLE TO CROSS"><span>UNABLE TO CROSS</span></label>
+            <p>TEMPORAL COMPATIBILITY SCAN</p>
+            <p class="helper">
+              Current calculations identify 10–19 December 2026 as possible Convergence dates.
+              Select <strong>every date</strong> on which your timeline could allow you to attend.
+            </p>
+
+            <div class="date-grid">
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-10"><span><strong>10</strong><small>THU</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-11"><span><strong>11</strong><small>FRI</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-12"><span><strong>12</strong><small>SAT</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-13"><span><strong>13</strong><small>SUN</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-14"><span><strong>14</strong><small>MON</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-15"><span><strong>15</strong><small>TUE</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-16"><span><strong>16</strong><small>WED</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-17"><span><strong>17</strong><small>THU</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-18"><span><strong>18</strong><small>FRI</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-19"><span><strong>19</strong><small>SAT</small></span></label>
             </div>
+
+            <p id="dateValidation" class="validation-message is-hidden">
+              Select at least one compatible date before registering your signal.
+            </p>
           </div>
-
-          <button type="button" class="next-button" data-next="2">CONTINUE CALIBRATION →</button>
-        </fieldset>
-
-        <fieldset class="form-step" data-step="2">
-          <legend>02 // VARIANT CALIBRATION</legend>
 
           <div class="question">
-            <p>EXPECTED MANIFESTATION</p>
-            <div class="choice-grid">
-              <label class="choice"><input type="radio" name="manifestation" value="FULL VARIANT"><span>FULL VARIANT<br><small>Costume / transformation</small></span></label>
-              <label class="choice"><input type="radio" name="manifestation" value="PARTIAL VARIANT"><span>PARTIAL VARIANT<br><small>Subtle alternate self</small></span></label>
-              <label class="choice"><input type="radio" name="manifestation" value="PRIME FORM"><span>PRIME FORM<br><small>No costume needed</small></span></label>
-              <label class="choice"><input type="radio" name="manifestation" value="UNDECIDED"><span>UNDECIDED<br><small>Reality still unstable</small></span></label>
+            <p>BIOLOGICAL COMPATIBILITY // FOOD PROTOCOL</p>
+            <p class="helper">Select every option that applies.</p>
+
+            <div class="choice-grid compact">
+              <label class="choice">
+                <input type="checkbox" name="diet" value="VEGAN">
+                <span>VEGAN</span>
+              </label>
+
+              <label class="choice">
+                <input type="checkbox" name="diet" value="VEGETARIAN">
+                <span>VEGETARIAN</span>
+              </label>
+
+              <label class="choice">
+                <input type="checkbox" name="diet" value="CELIAC / STRICT GLUTEN-FREE">
+                <span>CELIAC / STRICT GLUTEN-FREE</span>
+              </label>
+
+              <label class="choice">
+                <input type="checkbox" name="diet" value="OMNIVORE">
+                <span>OMNIVORE</span>
+              </label>
             </div>
           </div>
 
           <label>
-            WHAT CHANGED IN YOUR UNIVERSE?
-            <textarea id="variantStory" rows="4" placeholder="Example: In my universe I became a Winx, a villain, a medieval alchemist, a rockstar…"></textarea>
+            ALLERGIES / INTOLERANCES / OTHER FOOD REQUIREMENTS
+            <textarea id="foodNotes" rows="3" placeholder="Please tell us anything relevant for safely planning the food."></textarea>
           </label>
 
-          <div class="form-nav">
-            <button type="button" class="back-button" data-back="1">← BACK</button>
-            <button type="button" class="next-button" data-next="3">CONTINUE →</button>
-          </div>
-        </fieldset>
-
-        <fieldset class="form-step" data-step="3">
-          <legend>03 // BIOLOGICAL COMPATIBILITY</legend>
-
-          <p class="helper">Select every protocol that applies.</p>
-          <div class="choice-grid compact">
-            <label class="choice"><input type="checkbox" name="diet" value="VEGAN"><span>VEGAN</span></label>
-            <label class="choice"><input type="checkbox" name="diet" value="VEGETARIAN"><span>VEGETARIAN</span></label>
-            <label class="choice"><input type="checkbox" name="diet" value="CELIAC / STRICT GLUTEN-FREE"><span>CELIAC / STRICT GLUTEN-FREE</span></label>
-            <label class="choice"><input type="checkbox" name="diet" value="OMNIVORE"><span>OMNIVORE</span></label>
-          </div>
-
-          <label>
-            ALLERGIES / OTHER FOOD PROTOCOLS
-            <input id="foodNotes" type="text" placeholder="Optional" />
+          <label class="privacy-consent">
+            <input id="privacyConsent" type="checkbox" required>
+            <span>I understand that my name, date availability and food requirements will be used only to organise the MuSyChEN–626 event.</span>
           </label>
 
-          <div class="form-nav">
-            <button type="button" class="back-button" data-back="2">← BACK</button>
-            <button type="submit" class="primary-button">[ REGISTER VARIANT ]</button>
-          </div>
+          <button type="submit" class="primary-button">[ REGISTER SIGNAL ]</button>
         </fieldset>
       </form>
 
       <div id="clearanceCard" class="clearance-card is-hidden">
-        <p class="section-kicker">REGISTRATION ACCEPTED</p>
-        <p class="clearance-label">TEMPORARY VARIANT ID</p>
+        <p class="section-kicker">SIGNAL REGISTERED</p>
+        <p class="clearance-label">TEMPORARY NEXUS ID</p>
         <h3 id="variantId">VAR–626–0000</h3>
         <p id="clearanceName"></p>
-        <p>Your Variant signature has been indexed. Further coordinates remain classified.</p>
+        <p>Your presence signal has been indexed.</p>
+        <p class="clearance-copy">Further identity documentation is not yet available. Await a future transmission as the Convergence approaches.</p>
         <p class="micro">NEXUS CLEARANCE // LEVEL 01</p>
       </div>
 
-      <p class="prototype-warning">Prototype note: this preview currently saves registration only in this browser. Before invitations are sent, it will be connected to the shared guest list.</p>
+      <p id="storageStatus" class="prototype-warning">Nexus database status: LOCAL FALLBACK. Connect the private MuSyChEN–626 Google Sheet before invitations are sent.</p>
+
+      <div class="recognition-center locked">
+        <div class="recognition-statusbar">
+          <span>VARIANT RECOGNITION CENTER</span>
+          <span class="locked-status">● CLOSED</span>
+        </div>
+
+        <div class="recognition-body">
+          <p class="section-kicker">IDENTITY DOCUMENTATION FACILITY</p>
+          <h2>VARIANT RECOGNITION CENTER</h2>
+
+          <p class="recognition-warning">ACCESS DENIED</p>
+          <p class="recognition-reason">CONVERGENCE PROXIMITY BELOW REQUIRED THRESHOLD</p>
+
+          <div class="document-list">
+            <div class="document-row">
+              <span>NEXUS ID VERIFICATION</span>
+              <strong>PENDING</strong>
+            </div>
+            <div class="document-row">
+              <span>FINAL CROSSING STATUS</span>
+              <strong>PENDING</strong>
+            </div>
+            <div class="document-row">
+              <span>VARIANT DECLARATION</span>
+              <strong>PENDING</strong>
+            </div>
+            <div class="document-row">
+              <span>SPECIES CLASSIFICATION</span>
+              <strong>PENDING</strong>
+            </div>
+            <div class="document-row">
+              <span>INTERDIMENSIONAL PASSPORT</span>
+              <strong>PENDING</strong>
+            </div>
+          </div>
+
+          <div class="pending-terminal">
+            <span>DOCUMENTATION WINDOW</span>
+            <strong>PENDING CALCULATION<span class="blink">_</span></strong>
+          </div>
+
+          <p class="recognition-copy">
+            Cross-reality identity records are currently incomplete. Your temporary Nexus ID will be required when the Recognition Center opens. Final crossing confirmation, Variant declaration and species classification will become available as the Convergence approaches.
+          </p>
+
+          <button class="locked-button" type="button" disabled>[ RECOGNITION OFFLINE ]</button>
+        </div>
+      </div>
     </section>
   </main>
 

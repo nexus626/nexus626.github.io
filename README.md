@@ -88,3 +88,10 @@ Phase 2 collects again:
 
 The repeated name makes the final attendance list human-readable even if the
 guest opens Phase 2 without the same browser/session.
+
+
+## v1.2 hotfix
+- restored the missing `appendInstantLine()` compilation helper
+- fixed the initialization freeze introduced in v1.1
+- audio initialization can no longer block the invitation
+- if any compilation animation fails, the full transmission is revealed automatically

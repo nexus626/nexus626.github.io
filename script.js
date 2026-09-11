@@ -150,8 +150,16 @@ function startBackgroundGlitches() {
   }, 7000 + Math.random()*2500);
 }
 
+
+function appendInstantLine(item) {
+  const line = document.createElement("div");
+  if (item.c) line.className = item.c;
+  line.textContent = item.t;
+  compileOutput.appendChild(line);
+}
+
 async function runCompilation() {
-  // v0.8: rapid compilation in glitch bursts instead of slow typewriter.
+  // Rapid compilation in glitch bursts; fail-safe reveals the transmission if an animation errors.
   for (let i=0;i<compilationBursts.length;i++) {
     const burst = compilationBursts[i];
 
@@ -188,10 +196,24 @@ async function runCompilation() {
 }
 
 initializeButton.addEventListener("click", () => {
-  initAudio();
   bootGate.style.display = "none";
   site.classList.remove("hidden-site");
-  runCompilation();
+
+  try {
+    initAudio();
+  } catch (err) {
+    console.warn("Audio initialization unavailable; continuing transmission without audio.", err);
+    audioEnabled = false;
+    const toggle = $("#audioToggle");
+    if (toggle) toggle.textContent = "AUDIO: UNAVAILABLE";
+  }
+
+  runCompilation().catch((err) => {
+    console.error("Compilation sequence error:", err);
+    // Fail open: always reveal the actual invitation instead of leaving users stuck.
+    compileOutput.style.display = "none";
+    finalTransmission.classList.remove("is-hidden");
+  });
 });
 
 $("#audioToggle").addEventListener("click", (e) => {

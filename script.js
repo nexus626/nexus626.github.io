@@ -28,7 +28,7 @@ const VARIANT_RECOGNITION_CENTER = "OFFLINE";
 
 let audioEnabled = true;
 let audioCtx, master;
-let backgroundGlitchInterval = null;
+let backgroundGlitchTimer = null;
 
 const compilationBursts = [
   [
@@ -61,72 +61,72 @@ const compilationBursts = [
 function initAudio() {
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   master = audioCtx.createGain();
-  master.gain.value = .62;
+  master.gain.value = .72;
   master.connect(audioCtx.destination);
-  startBackgroundGlitches();
+
+  scheduleRadioInterference();
 }
 
-/* Short terminal/UI click. No ambient music. */
-function interfaceClick(strength=.7) {
+function interfaceClick(strength=.75) {
   if (!audioEnabled || !audioCtx) return;
 
-  const buffer = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * 0.018), audioCtx.sampleRate);
+  const duration = 0.016;
+  const buffer = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * duration), audioCtx.sampleRate);
   const data = buffer.getChannelData(0);
+
   for (let i = 0; i < data.length; i++) {
     const env = 1 - i / data.length;
     data[i] = (Math.random() * 2 - 1) * env;
   }
 
-  const source = audioCtx.createBufferSource();
+  const src = audioCtx.createBufferSource();
   const filter = audioCtx.createBiquadFilter();
   const gain = audioCtx.createGain();
 
-  source.buffer = buffer;
+  src.buffer = buffer;
   filter.type = "bandpass";
-  filter.frequency.value = 1900 + Math.random() * 800;
+  filter.frequency.value = 1800 + Math.random() * 1000;
   filter.Q.value = 1.8;
-  gain.gain.value = 0.07 * strength;
+  gain.gain.value = .075 * strength;
 
-  source.connect(filter).connect(gain).connect(master);
-  source.start();
+  src.connect(filter).connect(gain).connect(master);
+  src.start();
 }
 
-/* Radio / deep-space transmission interference.
-   Filtered noise + a very short carrier chirp. */
 function radioGlitch(intensity=1) {
   if (!audioEnabled || !audioCtx) return;
 
-  const duration = 0.06 + Math.random() * 0.10;
+  const duration = .045 + Math.random() * .09;
   const buffer = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * duration), audioCtx.sampleRate);
   const data = buffer.getChannelData(0);
 
   for (let i = 0; i < data.length; i++) {
     const t = i / data.length;
-    const envelope = Math.sin(Math.PI * t) * (0.65 + 0.35 * Math.random());
-    data[i] = (Math.random() * 2 - 1) * envelope;
+    const env = Math.sin(Math.PI * t);
+    data[i] = (Math.random() * 2 - 1) * env;
   }
 
-  const source = audioCtx.createBufferSource();
+  const src = audioCtx.createBufferSource();
   const filter = audioCtx.createBiquadFilter();
   const gain = audioCtx.createGain();
 
-  source.buffer = buffer;
+  src.buffer = buffer;
   filter.type = "bandpass";
-  filter.frequency.value = 600 + Math.random() * 1900;
-  filter.Q.value = 2.5 + Math.random() * 4;
-  gain.gain.value = 0.055 * intensity;
+  filter.frequency.value = 500 + Math.random() * 2400;
+  filter.Q.value = 2 + Math.random() * 4;
+  gain.gain.value = .065 * intensity;
 
-  source.connect(filter).connect(gain).connect(master);
-  source.start();
+  src.connect(filter).connect(gain).connect(master);
+  src.start();
 
-  if (Math.random() > 0.45) {
+  if (Math.random() > .45) {
     const carrier = audioCtx.createOscillator();
     const carrierGain = audioCtx.createGain();
     carrier.type = "sine";
-    carrier.frequency.setValueAtTime(1100 + Math.random()*1200, audioCtx.currentTime);
-    carrier.frequency.exponentialRampToValueAtTime(250 + Math.random()*300, audioCtx.currentTime + duration);
-    carrierGain.gain.setValueAtTime(0.018 * intensity, audioCtx.currentTime);
-    carrierGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+    carrier.frequency.setValueAtTime(900 + Math.random()*1500, audioCtx.currentTime);
+    carrier.frequency.exponentialRampToValueAtTime(250 + Math.random()*350, audioCtx.currentTime + duration);
+    carrierGain.gain.setValueAtTime(.018 * intensity, audioCtx.currentTime);
+    carrierGain.gain.exponentialRampToValueAtTime(.0001, audioCtx.currentTime + duration);
     carrier.connect(carrierGain).connect(master);
     carrier.start();
     carrier.stop(audioCtx.currentTime + duration);
@@ -135,22 +135,26 @@ function radioGlitch(intensity=1) {
 
 function glitchBurst(intensity=4) {
   if (!audioEnabled || !audioCtx) return;
-  const count = Math.max(1, Math.round(intensity / 2));
+  const count = Math.max(1, Math.ceil(intensity / 2));
   for (let i=0; i<count; i++) {
-    setTimeout(() => radioGlitch(0.7 + Math.random()*0.5), i * (55 + Math.random()*60));
+    setTimeout(() => radioGlitch(.7 + Math.random()*.55), i * (45 + Math.random()*55));
   }
 }
 
-function startBackgroundGlitches() {
-  if (backgroundGlitchInterval) clearInterval(backgroundGlitchInterval);
-  backgroundGlitchInterval = setInterval(() => {
-    if (!audioEnabled || !audioCtx) return;
-    // Sparse, irregular interference — not a constant soundtrack.
-    if (Math.random() > 0.48) radioGlitch(0.55 + Math.random()*0.4);
-  }, 7000 + Math.random()*2500);
+function scheduleRadioInterference() {
+  if (backgroundGlitchTimer) clearTimeout(backgroundGlitchTimer);
+
+  const next = 4200 + Math.random() * 5200;
+  backgroundGlitchTimer = setTimeout(() => {
+    if (audioEnabled && audioCtx && Math.random() > .28) {
+      radioGlitch(.45 + Math.random() * .45);
+    }
+    scheduleRadioInterference();
+  }, next);
 }
 
-
+/* This helper was missing from the pasted JavaScript.
+   Without it, compilation stops immediately after the first line. */
 function appendInstantLine(item) {
   const line = document.createElement("div");
   if (item.c) line.className = item.c;
@@ -158,122 +162,66 @@ function appendInstantLine(item) {
   compileOutput.appendChild(line);
 }
 
-let compilationFinished = false;
-let compilationWatchdog = null;
+async function runCompilation() {
+  // v0.8: rapid compilation in glitch bursts instead of slow typewriter.
+  for (let i=0;i<compilationBursts.length;i++) {
+    const burst = compilationBursts[i];
 
-function revealFinalTransmission() {
-  if (compilationFinished) return;
-  compilationFinished = true;
+    if (i === 0) {
+      // Only the very first line visibly types itself.
+      const item = burst[0];
+      const line = document.createElement("div");
+      line.className = item.c || "";
+      compileOutput.appendChild(line);
+      let shown = "";
+      for (const ch of item.t) {
+        shown += ch;
+        line.textContent = shown + "█";
+        if (shown.length % 4 === 0) interfaceClick(.45);
+        await new Promise(r=>setTimeout(r,7));
+      }
+      line.textContent = item.t;
+      appendInstantLine(burst[1]);
+    } else {
+      glitchBurst(i === 4 ? 8 : 5);
+      document.body.classList.add("micro-glitch");
+      burst.forEach(appendInstantLine);
+      await new Promise(r=>setTimeout(r,65));
+      document.body.classList.remove("micro-glitch");
+    }
 
-  if (compilationWatchdog) {
-    clearTimeout(compilationWatchdog);
-    compilationWatchdog = null;
+    await new Promise(r=>setTimeout(r, i < 2 ? 180 : 115));
   }
 
+  await new Promise(r=>setTimeout(r,180));
   compileOutput.style.display = "none";
   finalTransmission.classList.remove("is-hidden");
-
-  try {
-    glitchBurst(6);
-  } catch (e) {
-    console.warn("Final glitch unavailable:", e);
-  }
-}
-
-function runCompilation() {
-  compilationFinished = false;
-  compileOutput.innerHTML = "";
-  compileOutput.style.display = "";
-  finalTransmission.classList.add("is-hidden");
-
-  // Absolute failsafe: the invitation can never remain stuck on compilation.
-  compilationWatchdog = setTimeout(() => {
-    console.warn("Compilation watchdog triggered. Revealing transmission.");
-    revealFinalTransmission();
-  }, 4200);
-
-  const firstItem = compilationBursts[0][0];
-  const firstLine = document.createElement("div");
-  firstLine.className = firstItem.c || "";
-  compileOutput.appendChild(firstLine);
-
-  let charIndex = 0;
-
-  function typeNextCharacter() {
-    if (compilationFinished) return;
-
-    charIndex += 1;
-    firstLine.textContent = firstItem.t.slice(0, charIndex) + (charIndex < firstItem.t.length ? "█" : "");
-
-    if (charIndex % 5 === 0) {
-      try { interfaceClick(.45); } catch (e) {}
-    }
-
-    if (charIndex < firstItem.t.length) {
-      setTimeout(typeNextCharacter, 6);
-      return;
-    }
-
-    // First line finished. Everything else is intentionally rapid.
-    setTimeout(() => {
-      if (compilationFinished) return;
-      appendInstantLine(compilationBursts[0][1]);
-      scheduleBurst(1);
-    }, 70);
-  }
-
-  function scheduleBurst(burstIndex) {
-    if (compilationFinished) return;
-
-    if (burstIndex >= compilationBursts.length) {
-      setTimeout(revealFinalTransmission, 120);
-      return;
-    }
-
-    try {
-      glitchBurst(burstIndex === 4 ? 6 : 3);
-    } catch (e) {}
-
-    document.body.classList.add("micro-glitch");
-
-    const burst = compilationBursts[burstIndex];
-    burst.forEach(appendInstantLine);
-
-    setTimeout(() => {
-      document.body.classList.remove("micro-glitch");
-      scheduleBurst(burstIndex + 1);
-    }, burstIndex < 2 ? 120 : 85);
-  }
-
-  typeNextCharacter();
+  glitchBurst(10);
 }
 
 initializeButton.addEventListener("click", () => {
-  // Reveal the UI first: even audio/browser issues must never block the invitation.
   bootGate.style.display = "none";
   site.classList.remove("hidden-site");
 
   try {
     initAudio();
   } catch (err) {
-    console.warn("Audio initialization unavailable; continuing without audio.", err);
+    console.warn("Audio unavailable; continuing transmission.", err);
     audioEnabled = false;
-    const toggle = $("#audioToggle");
-    if (toggle) toggle.textContent = "AUDIO: UNAVAILABLE";
+    $("#audioToggle").textContent = "AUDIO: UNAVAILABLE";
   }
 
-  try {
-    runCompilation();
-  } catch (err) {
-    console.error("Compilation startup error:", err);
-    revealFinalTransmission();
-  }
+  runCompilation().catch(err => {
+    console.error("Transmission compilation failed:", err);
+    compileOutput.style.display = "none";
+    finalTransmission.classList.remove("is-hidden");
+  });
 });
 
 $("#audioToggle").addEventListener("click", (e) => {
   audioEnabled = !audioEnabled;
   e.target.textContent = `AUDIO: ${audioEnabled ? "SIGNAL ON" : "OFF"}`;
-  if (master && audioCtx) master.gain.setTargetAtTime(audioEnabled ? .62 : 0, audioCtx.currentTime, .05);
+  if (master && audioCtx) master.gain.setTargetAtTime(audioEnabled ? .72 : 0, audioCtx.currentTime, .05);
 });
 
 function updateClock(){
@@ -418,11 +366,12 @@ function resolveNexusIdForRecognition() {
 
   let fromLocal = "";
   try {
-    const phase1 = JSON.parse(localStorage.getItem("nexus626_access_registry") || "{}");
-    fromLocal = phase1.nexusId || "";
+    const phase1Record = JSON.parse(localStorage.getItem("nexus626_access_registry") || "{}");
+    fromLocal = phase1Record.nexusId || "";
   } catch (e) {}
 
   const resolved = (fromLink || fromLocal || "").trim().toUpperCase();
+
   const hidden = $("#phase2NexusId");
   const display = $("#phase2NexusDisplay");
 
@@ -435,8 +384,8 @@ function resolveNexusIdForRecognition() {
 
   return resolved;
 }
-resolveNexusIdForRecognition();
 
+resolveNexusIdForRecognition();
 
 
 const phase2Form = $("#phase2Form");

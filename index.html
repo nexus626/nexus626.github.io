@@ -8,8 +8,10 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <canvas id="codeRain" aria-hidden="true"></canvas>
   <div class="noise" aria-hidden="true"></div>
   <div class="scanlines" aria-hidden="true"></div>
+  <div class="warp-overlay" aria-hidden="true"></div>
 
   <main class="transmission-shell">
     <div class="statusbar">
@@ -53,11 +55,42 @@
       <button id="accessButton" class="access-button">
         <span>[</span> ACCESS THE NEXUS <span>]</span>
       </button>
+    </section>
 
-      <div id="nexusPanel" class="nexus-panel" hidden>
-        <p>AUTHENTICATION REQUEST RECEIVED.</p>
-        <p>Further Nexus protocols remain classified.</p>
-        <p class="small">TRANSMISSION // MuSyChEN–626 // v0.1</p>
+    <section id="nexusSection" class="nexus-section" hidden>
+      <div class="section-divider"></div>
+      <p class="section-kicker">ACCESS SEQUENCE COMPLETE</p>
+      <h2>NEXUS PROTOCOLS UNLOCKED</h2>
+
+      <div class="nexus-grid">
+        <article class="nexus-card">
+          <p class="nexus-label">STATUS</p>
+          <p class="nexus-main">CONVERGENCE CONFIRMED</p>
+          <p class="nexus-copy">The walls between realities are weakening. MuSyChEN–626 is now receiving incoming Variants.</p>
+        </article>
+
+        <article class="nexus-card">
+          <p class="nexus-label">INSTRUCTION</p>
+          <p class="nexus-main">REPORT AS YOUR VARIANT</p>
+          <p class="nexus-copy">Arrive not necessarily as someone else — but as yourself from another universe.</p>
+        </article>
+
+        <article class="nexus-card">
+          <p class="nexus-label">DRESS PROTOCOL</p>
+          <p class="nexus-main">COME AS YOURSELF</p>
+          <p class="nexus-copy">Just not necessarily the version of you from this universe.</p>
+        </article>
+
+        <article class="nexus-card">
+          <p class="nexus-label">CLASSIFIED</p>
+          <p class="nexus-main">NEXUS DATA INCOMPLETE</p>
+          <p class="nexus-copy">Date, location and further transmission details remain under calculation.</p>
+        </article>
+      </div>
+
+      <div class="next-step">
+        <p class="next-step-title">NEXT TRANSMISSION TARGET</p>
+        <p>Upcoming sections can reveal the story, dress code, RSVP and classified event coordinates.</p>
       </div>
     </section>
 
@@ -67,6 +100,17 @@
       <span>CONNECTION: ENCRYPTED</span>
     </footer>
   </main>
+
+  <div id="accessOverlay" class="access-overlay" hidden>
+    <div class="access-overlay-panel">
+      <p class="overlay-kicker">NEXUS HANDSHAKE INITIATED</p>
+      <h3>AUTHENTICATING VARIANT</h3>
+      <div class="progress-shell">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+      <p id="progressText" class="progress-text">Decoding transmission…</p>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

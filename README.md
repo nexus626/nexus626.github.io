@@ -52,3 +52,39 @@ Do not upload the Google Sheets setup folders unless you want them publicly visi
 - more cinematic "space / multiverse" atmosphere
 - still no external audio files needed
 - audio starts only after user interaction because of browser autoplay rules
+
+
+## v1.0 sound + recognition update
+- removed the continuous cosmic soundtrack
+- removed the previous synthetic tones
+- audio now consists only of UI clicks and sparse radio/deep-space interference
+- Phase 2 no longer asks guests to remember or type their Nexus ID
+- the Nexus ID can be resolved automatically from:
+  1. a personalised URL such as `?nexus=VAR-626-AB12`
+  2. the Phase 1 record stored in the same browser
+- Species remains free text; no predefined taxonomy is imposed
+
+Recommended December link format:
+`https://nexus626.github.io/?nexus=VAR-626-AB12#recognitionCenter`
+
+
+## v1.1 guest identity / party size update
+
+Phase 1 now collects:
+- First name
+- Last name
+- Expected party size, including the respondent
+- Date availability
+- Food requirements
+- Nexus ID
+
+Phase 2 collects again:
+- First name
+- Last name
+- Final crossing status
+- Final party size if attending
+- Variant declaration
+- Species / nature
+
+The repeated name makes the final attendance list human-readable even if the
+guest opens Phase 2 without the same browser/session.

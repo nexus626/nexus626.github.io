@@ -27,8 +27,7 @@ const VARIANT_RECOGNITION_CENTER = "OFFLINE";
 // Allowed values: "OFFLINE" or "OPERATIONAL".
 
 let audioEnabled = true;
-let audioCtx, master, humOsc, humGain;
-let ambientNodes = {};
+let audioCtx, master;
 let backgroundGlitchInterval = null;
 
 const compilationBursts = [
@@ -62,135 +61,93 @@ const compilationBursts = [
 function initAudio() {
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   master = audioCtx.createGain();
-  master.gain.value = .48;
+  master.gain.value = .62;
   master.connect(audioCtx.destination);
+  startBackgroundGlitches();
+}
 
-  const now = audioCtx.currentTime;
+/* Short terminal/UI click. No ambient music. */
+function interfaceClick(strength=.7) {
+  if (!audioEnabled || !audioCtx) return;
 
-  // Main cosmic bed
-  const droneBus = audioCtx.createGain();
-  droneBus.gain.value = 0.16;
-  droneBus.connect(master);
-
-  const filter = audioCtx.createBiquadFilter();
-  filter.type = "lowpass";
-  filter.frequency.value = 950;
-  filter.Q.value = 0.6;
-  filter.connect(droneBus);
-
-  const osc1 = audioCtx.createOscillator();
-  const osc2 = audioCtx.createOscillator();
-  const osc3 = audioCtx.createOscillator();
-  osc1.type = "sine";
-  osc2.type = "triangle";
-  osc3.type = "sine";
-  osc1.frequency.value = 54;   // deep space hum
-  osc2.frequency.value = 81;   // cinematic fifth-like lift
-  osc3.frequency.value = 108;  // overtone / organ-like body
-
-  const g1 = audioCtx.createGain(); g1.gain.value = 0.42;
-  const g2 = audioCtx.createGain(); g2.gain.value = 0.16;
-  const g3 = audioCtx.createGain(); g3.gain.value = 0.10;
-
-  osc1.connect(g1).connect(filter);
-  osc2.connect(g2).connect(filter);
-  osc3.connect(g3).connect(filter);
-
-  // Slow movement
-  const lfo = audioCtx.createOscillator();
-  const lfoGain = audioCtx.createGain();
-  lfo.type = "sine";
-  lfo.frequency.value = 0.08;
-  lfoGain.gain.value = 130;
-  lfo.connect(lfoGain).connect(filter.frequency);
-
-  const lfoAmp = audioCtx.createOscillator();
-  const lfoAmpGain = audioCtx.createGain();
-  lfoAmp.type = "sine";
-  lfoAmp.frequency.value = 0.11;
-  lfoAmpGain.gain.value = 0.05;
-  lfoAmp.connect(lfoAmpGain).connect(droneBus.gain);
-
-  // Soft cosmic shimmer
-  const shimmer = audioCtx.createOscillator();
-  const shimmerGain = audioCtx.createGain();
-  const shimmerFilter = audioCtx.createBiquadFilter();
-  shimmer.type = "triangle";
-  shimmer.frequency.value = 320;
-  shimmerGain.gain.value = 0.006;
-  shimmerFilter.type = "bandpass";
-  shimmerFilter.frequency.value = 1200;
-  shimmerFilter.Q.value = 1.6;
-  shimmer.connect(shimmerGain).connect(shimmerFilter).connect(master);
-
-  // Slow pulse like a distant signal
-  const pulseOsc = audioCtx.createOscillator();
-  const pulseGain = audioCtx.createGain();
-  pulseOsc.type = "sine";
-  pulseOsc.frequency.value = 162;
-  pulseGain.gain.value = 0;
-  pulseOsc.connect(pulseGain).connect(master);
-
-  function pulseSequence() {
-    if (!audioEnabled || !audioCtx) return;
-    const t = audioCtx.currentTime;
-    pulseGain.gain.cancelScheduledValues(t);
-    pulseGain.gain.setValueAtTime(0.0001, t);
-    pulseGain.gain.exponentialRampToValueAtTime(0.028, t + 0.12);
-    pulseGain.gain.exponentialRampToValueAtTime(0.0001, t + 1.0);
+  const buffer = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * 0.018), audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    const env = 1 - i / data.length;
+    data[i] = (Math.random() * 2 - 1) * env;
   }
 
-  // Periodic subtle pulses
-  const pulseInterval = setInterval(() => {
-    if (audioEnabled) pulseSequence();
-  }, 5200);
+  const source = audioCtx.createBufferSource();
+  const filter = audioCtx.createBiquadFilter();
+  const gain = audioCtx.createGain();
 
-  [osc1, osc2, osc3, lfo, lfoAmp, shimmer, pulseOsc].forEach(o => o.start(now));
+  source.buffer = buffer;
+  filter.type = "bandpass";
+  filter.frequency.value = 1900 + Math.random() * 800;
+  filter.Q.value = 1.8;
+  gain.gain.value = 0.07 * strength;
 
-  ambientNodes = { pulseInterval, pulseSequence, droneBus, shimmerGain };
+  source.connect(filter).connect(gain).connect(master);
+  source.start();
+}
 
-  startBackgroundGlitches();
+/* Radio / deep-space transmission interference.
+   Filtered noise + a very short carrier chirp. */
+function radioGlitch(intensity=1) {
+  if (!audioEnabled || !audioCtx) return;
+
+  const duration = 0.06 + Math.random() * 0.10;
+  const buffer = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * duration), audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  for (let i = 0; i < data.length; i++) {
+    const t = i / data.length;
+    const envelope = Math.sin(Math.PI * t) * (0.65 + 0.35 * Math.random());
+    data[i] = (Math.random() * 2 - 1) * envelope;
+  }
+
+  const source = audioCtx.createBufferSource();
+  const filter = audioCtx.createBiquadFilter();
+  const gain = audioCtx.createGain();
+
+  source.buffer = buffer;
+  filter.type = "bandpass";
+  filter.frequency.value = 600 + Math.random() * 1900;
+  filter.Q.value = 2.5 + Math.random() * 4;
+  gain.gain.value = 0.055 * intensity;
+
+  source.connect(filter).connect(gain).connect(master);
+  source.start();
+
+  if (Math.random() > 0.45) {
+    const carrier = audioCtx.createOscillator();
+    const carrierGain = audioCtx.createGain();
+    carrier.type = "sine";
+    carrier.frequency.setValueAtTime(1100 + Math.random()*1200, audioCtx.currentTime);
+    carrier.frequency.exponentialRampToValueAtTime(250 + Math.random()*300, audioCtx.currentTime + duration);
+    carrierGain.gain.setValueAtTime(0.018 * intensity, audioCtx.currentTime);
+    carrierGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+    carrier.connect(carrierGain).connect(master);
+    carrier.start();
+    carrier.stop(audioCtx.currentTime + duration);
+  }
+}
+
+function glitchBurst(intensity=4) {
+  if (!audioEnabled || !audioCtx) return;
+  const count = Math.max(1, Math.round(intensity / 2));
+  for (let i=0; i<count; i++) {
+    setTimeout(() => radioGlitch(0.7 + Math.random()*0.5), i * (55 + Math.random()*60));
+  }
 }
 
 function startBackgroundGlitches() {
   if (backgroundGlitchInterval) clearInterval(backgroundGlitchInterval);
   backgroundGlitchInterval = setInterval(() => {
     if (!audioEnabled || !audioCtx) return;
-    const chance = Math.random();
-    if (chance > 0.35) {
-      glitchBurst(chance > 0.82 ? 6 : 3);
-    }
-  }, 6500);
-}
-
-function blip(freq=420, duration=.045, gain=.065) {
-  if (!audioEnabled || !audioCtx) return;
-  const o = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  const f = audioCtx.createBiquadFilter();
-  o.type = Math.random() > .55 ? "square" : "sawtooth";
-  o.frequency.value = freq + Math.random()*180;
-  f.type = "bandpass";
-  f.frequency.value = Math.max(250, freq * 1.7);
-  f.Q.value = 1.3;
-  g.gain.setValueAtTime(gain, audioCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
-  o.connect(f).connect(g).connect(master);
-  o.start();
-  o.stop(audioCtx.currentTime + duration);
-}
-
-function glitchBurst(intensity=5) {
-  if (!audioEnabled || !audioCtx) return;
-  const spacing = 18 + Math.random()*18;
-  for (let i=0;i<intensity;i++) {
-    setTimeout(() => {
-      blip(120 + i*105 + Math.random()*70, .018 + Math.random()*0.03, .035 + Math.random()*0.02);
-      if (Math.random() > 0.55) {
-        blip(900 + Math.random()*700, .01 + Math.random()*0.015, .02);
-      }
-    }, i*spacing);
-  }
+    // Sparse, irregular interference — not a constant soundtrack.
+    if (Math.random() > 0.48) radioGlitch(0.55 + Math.random()*0.4);
+  }, 7000 + Math.random()*2500);
 }
 
 async function runCompilation() {
@@ -208,7 +165,7 @@ async function runCompilation() {
       for (const ch of item.t) {
         shown += ch;
         line.textContent = shown + "█";
-        if (shown.length % 4 === 0) blip(300 + Math.random()*120,.018,.022);
+        if (shown.length % 4 === 0) interfaceClick(.55);
         await new Promise(r=>setTimeout(r,7));
       }
       line.textContent = item.t;
@@ -239,8 +196,8 @@ initializeButton.addEventListener("click", () => {
 
 $("#audioToggle").addEventListener("click", (e) => {
   audioEnabled = !audioEnabled;
-  e.target.textContent = `AUDIO: ${audioEnabled ? "COSMIC ON" : "OFF"}`;
-  if (master && audioCtx) master.gain.setTargetAtTime(audioEnabled ? .48 : 0, audioCtx.currentTime, .08);
+  e.target.textContent = `AUDIO: ${audioEnabled ? "SIGNAL ON" : "OFF"}`;
+  if (master && audioCtx) master.gain.setTargetAtTime(audioEnabled ? .62 : 0, audioCtx.currentTime, .05);
 });
 
 function updateClock(){
@@ -302,7 +259,10 @@ variantForm.addEventListener("submit", async (e)=>{
   }
   validation.classList.add("is-hidden");
 
-  const name = $("#guestName").value.trim() || "UNKNOWN";
+  const firstName = $("#guestFirstName").value.trim() || "UNKNOWN";
+  const lastName = $("#guestLastName").value.trim() || "UNKNOWN";
+  const fullName = `${firstName} ${lastName}`.trim();
+  const partySize = Math.max(1, Number($("#partySize").value) || 1);
   const id = createVariantId();
 
   const dateFlags = {};
@@ -314,7 +274,10 @@ variantForm.addEventListener("submit", async (e)=>{
   const data = {
     timestamp: new Date().toISOString(),
     nexusId: id,
-    name,
+    firstName,
+    lastName,
+    fullName,
+    partySize,
     availableDates: selectedDates,
     ...dateFlags,
     dietaryRequirements: $$('input[name="diet"]:checked').map(x => x.value).join(", "),
@@ -327,7 +290,7 @@ variantForm.addEventListener("submit", async (e)=>{
 
   variantForm.classList.add("is-hidden");
   $("#variantId").textContent = id;
-  $("#clearanceName").textContent = `${name.toUpperCase()} // TEMPORAL SIGNATURE INDEXED`;
+  $("#clearanceName").textContent = `${fullName.toUpperCase()} // TEMPORAL SIGNATURE INDEXED`;
 
   const status = $("#storageStatus");
   if (result.connected) {
@@ -373,6 +336,33 @@ function configureRecognitionCenter() {
 }
 configureRecognitionCenter();
 
+function resolveNexusIdForRecognition() {
+  const params = new URLSearchParams(window.location.search);
+  const fromLink = params.get("nexus");
+
+  let fromLocal = "";
+  try {
+    const phase1 = JSON.parse(localStorage.getItem("nexus626_access_registry") || "{}");
+    fromLocal = phase1.nexusId || "";
+  } catch (e) {}
+
+  const resolved = (fromLink || fromLocal || "").trim().toUpperCase();
+  const hidden = $("#phase2NexusId");
+  const display = $("#phase2NexusDisplay");
+
+  if (hidden) hidden.value = resolved;
+
+  if (display) {
+    display.textContent = resolved || "IDENTITY LINK REQUIRED";
+    display.classList.toggle("id-error", !resolved);
+  }
+
+  return resolved;
+}
+resolveNexusIdForRecognition();
+
+
+
 const phase2Form = $("#phase2Form");
 if (phase2Form) {
   const crossingRadios = $$('input[name="crossingStatus"]');
@@ -383,8 +373,10 @@ if (phase2Form) {
       const status = phase2Form.elements.crossingStatus?.value || "";
       const willConverge = status === "I WILL CONVERGE";
       declarationFields.style.opacity = willConverge ? "1" : ".35";
+      $("#phase2PartySizeWrap").style.opacity = willConverge ? "1" : ".35";
       $("#variantDeclaration").required = willConverge;
       $("#speciesClassification").required = willConverge;
+      $("#phase2PartySize").required = willConverge;
     });
   });
 
@@ -393,11 +385,30 @@ if (phase2Form) {
 
     if (VARIANT_RECOGNITION_CENTER !== "OPERATIONAL") return;
 
+    const nexusId = resolveNexusIdForRecognition();
+    if (!nexusId) {
+      $("#phase2NexusDisplay").textContent = "IDENTITY LINK REQUIRED";
+      $("#phase2NexusDisplay").classList.add("id-error");
+      radioGlitch(1.1);
+      return;
+    }
+
     const crossingStatus = phase2Form.elements.crossingStatus?.value || "";
+    const firstName = $("#phase2FirstName").value.trim();
+    const lastName = $("#phase2LastName").value.trim();
+    const fullName = `${firstName} ${lastName}`.trim();
+    const finalPartySize = crossingStatus === "I WILL CONVERGE"
+      ? Math.max(1, Number($("#phase2PartySize").value) || 1)
+      : 0;
+
     const data = {
       timestamp: new Date().toISOString(),
-      nexusId: $("#phase2NexusId").value.trim().toUpperCase(),
+      nexusId,
+      firstName,
+      lastName,
+      fullName,
       crossingStatus,
+      finalPartySize,
       variantDeclaration: crossingStatus === "I WILL CONVERGE"
         ? $("#variantDeclaration").value.trim()
         : "",

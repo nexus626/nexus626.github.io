@@ -88,9 +88,22 @@
         <fieldset class="form-step active">
           <legend>01 // SIGNAL RESPONSE</legend>
 
+          <div class="name-grid">
+            <label>
+              FIRST NAME
+              <input id="guestFirstName" type="text" placeholder="First name" required />
+            </label>
+
+            <label>
+              LAST NAME
+              <input id="guestLastName" type="text" placeholder="Last name" required />
+            </label>
+          </div>
+
           <label>
-            PRIME IDENTIFIER
-            <input id="guestName" type="text" placeholder="Your name" required />
+            EXPECTED CROSSING PARTY
+            <input id="partySize" type="number" min="1" max="10" value="1" required />
+            <small class="field-note">Total number of people expected, including you.</small>
           </label>
 
           <div class="question">
@@ -147,12 +160,12 @@
 
           <label>
             ALLERGIES / INTOLERANCES / OTHER FOOD REQUIREMENTS
-            <textarea id="foodNotes" rows="3" placeholder="Please tell us anything relevant for safely planning the food."></textarea>
+            <textarea id="foodNotes" rows="3" placeholder="Please include anything relevant for you or accompanying guests."></textarea>
           </label>
 
           <label class="privacy-consent">
             <input id="privacyConsent" type="checkbox" required>
-            <span>I understand that my name, date availability and food requirements will be used only to organise the MuSyChEN–626 event.</span>
+            <span>I understand that my name, party size, date availability and food requirements will be used only to organise the MuSyChEN–626 event.</span>
           </label>
 
           <button type="submit" class="primary-button">[ REGISTER SIGNAL ]</button>
@@ -232,10 +245,24 @@
           <p class="operational-message">RECOGNITION PROCEDURES AVAILABLE</p>
 
           <form id="phase2Form">
-            <label>
-              NEXUS ID
-              <input id="phase2NexusId" type="text" placeholder="VAR–626–XXXX" required />
-            </label>
+            <div class="name-grid">
+              <label>
+                FIRST NAME
+                <input id="phase2FirstName" type="text" placeholder="First name" required />
+              </label>
+
+              <label>
+                LAST NAME
+                <input id="phase2LastName" type="text" placeholder="Last name" required />
+              </label>
+            </div>
+
+            <div class="auto-id-panel">
+              <span>NEXUS ID</span>
+              <strong id="phase2NexusDisplay">AUTO-RESOLVING...</strong>
+              <small>Your recognition link identifies your Phase 1 record automatically.</small>
+            </div>
+            <input id="phase2NexusId" type="hidden" />
 
             <div class="question">
               <p>FINAL CROSSING STATUS</p>
@@ -251,6 +278,14 @@
               </div>
             </div>
 
+            <div id="phase2PartySizeWrap">
+              <label>
+                FINAL CROSSING PARTY
+                <input id="phase2PartySize" type="number" min="1" max="10" value="1" />
+                <small class="field-note">Total number of people attending, including you.</small>
+              </label>
+            </div>
+
             <div id="variantDeclarationFields">
               <label>
                 VARIANT DECLARATION
@@ -259,13 +294,13 @@
 
               <label>
                 SPECIES CLASSIFICATION
-                <input id="speciesClassification" type="text" placeholder="FAIRY / HUMAN / WITCH / ANDROID / OTHER..." />
+                <input id="speciesClassification" type="text" placeholder="Declare your Variant species / nature in your own words" />
               </label>
             </div>
 
             <label class="privacy-consent">
               <input id="phase2Consent" type="checkbox" required>
-              <span>I understand that these details will be used to confirm attendance and prepare the Interdimensional Passport.</span>
+              <span>I understand that these details will be used to confirm attendance, final party size and prepare the Interdimensional Passport.</span>
             </label>
 
             <button type="submit" class="primary-button">[ COMPLETE RECOGNITION ]</button>

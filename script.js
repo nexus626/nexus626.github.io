@@ -158,62 +158,116 @@ function appendInstantLine(item) {
   compileOutput.appendChild(line);
 }
 
-async function runCompilation() {
-  // Rapid compilation in glitch bursts; fail-safe reveals the transmission if an animation errors.
-  for (let i=0;i<compilationBursts.length;i++) {
-    const burst = compilationBursts[i];
+let compilationFinished = false;
+let compilationWatchdog = null;
 
-    if (i === 0) {
-      // Only the very first line visibly types itself.
-      const item = burst[0];
-      const line = document.createElement("div");
-      line.className = item.c || "";
-      compileOutput.appendChild(line);
-      let shown = "";
-      for (const ch of item.t) {
-        shown += ch;
-        line.textContent = shown + "█";
-        if (shown.length % 4 === 0) interfaceClick(.55);
-        await new Promise(r=>setTimeout(r,7));
-      }
-      line.textContent = item.t;
-      appendInstantLine(burst[1]);
-    } else {
-      glitchBurst(i === 4 ? 8 : 5);
-      document.body.classList.add("micro-glitch");
-      burst.forEach(appendInstantLine);
-      await new Promise(r=>setTimeout(r,65));
-      document.body.classList.remove("micro-glitch");
-    }
+function revealFinalTransmission() {
+  if (compilationFinished) return;
+  compilationFinished = true;
 
-    await new Promise(r=>setTimeout(r, i < 2 ? 180 : 115));
+  if (compilationWatchdog) {
+    clearTimeout(compilationWatchdog);
+    compilationWatchdog = null;
   }
 
-  await new Promise(r=>setTimeout(r,180));
   compileOutput.style.display = "none";
   finalTransmission.classList.remove("is-hidden");
-  glitchBurst(10);
+
+  try {
+    glitchBurst(6);
+  } catch (e) {
+    console.warn("Final glitch unavailable:", e);
+  }
+}
+
+function runCompilation() {
+  compilationFinished = false;
+  compileOutput.innerHTML = "";
+  compileOutput.style.display = "";
+  finalTransmission.classList.add("is-hidden");
+
+  // Absolute failsafe: the invitation can never remain stuck on compilation.
+  compilationWatchdog = setTimeout(() => {
+    console.warn("Compilation watchdog triggered. Revealing transmission.");
+    revealFinalTransmission();
+  }, 4200);
+
+  const firstItem = compilationBursts[0][0];
+  const firstLine = document.createElement("div");
+  firstLine.className = firstItem.c || "";
+  compileOutput.appendChild(firstLine);
+
+  let charIndex = 0;
+
+  function typeNextCharacter() {
+    if (compilationFinished) return;
+
+    charIndex += 1;
+    firstLine.textContent = firstItem.t.slice(0, charIndex) + (charIndex < firstItem.t.length ? "█" : "");
+
+    if (charIndex % 5 === 0) {
+      try { interfaceClick(.45); } catch (e) {}
+    }
+
+    if (charIndex < firstItem.t.length) {
+      setTimeout(typeNextCharacter, 6);
+      return;
+    }
+
+    // First line finished. Everything else is intentionally rapid.
+    setTimeout(() => {
+      if (compilationFinished) return;
+      appendInstantLine(compilationBursts[0][1]);
+      scheduleBurst(1);
+    }, 70);
+  }
+
+  function scheduleBurst(burstIndex) {
+    if (compilationFinished) return;
+
+    if (burstIndex >= compilationBursts.length) {
+      setTimeout(revealFinalTransmission, 120);
+      return;
+    }
+
+    try {
+      glitchBurst(burstIndex === 4 ? 6 : 3);
+    } catch (e) {}
+
+    document.body.classList.add("micro-glitch");
+
+    const burst = compilationBursts[burstIndex];
+    burst.forEach(appendInstantLine);
+
+    setTimeout(() => {
+      document.body.classList.remove("micro-glitch");
+      scheduleBurst(burstIndex + 1);
+    }, burstIndex < 2 ? 120 : 85);
+  }
+
+  typeNextCharacter();
 }
 
 initializeButton.addEventListener("click", () => {
+  // Reveal the UI first: even audio/browser issues must never block the invitation.
   bootGate.style.display = "none";
   site.classList.remove("hidden-site");
 
   try {
     initAudio();
   } catch (err) {
-    console.warn("Audio initialization unavailable; continuing transmission without audio.", err);
+    console.warn("Audio initialization unavailable; continuing without audio.", err);
     audioEnabled = false;
     const toggle = $("#audioToggle");
     if (toggle) toggle.textContent = "AUDIO: UNAVAILABLE";
   }
 
-  runCompilation().catch((err) => {
-    console.error("Compilation sequence error:", err);
-    // Fail open: always reveal the actual invitation instead of leaving users stuck.
-    compileOutput.style.display = "none";
-    finalTransmission.classList.remove("is-hidden");
-  });
+  try {
+    runCompilation();
+  } catch (err) {
+    console.error("Compilation startup error:", err);
+    revealFinalTransmission();
+  }
 });
 
 $("#audioToggle").addEventListener("click", (e) => {

@@ -95,3 +95,10 @@ guest opens Phase 2 without the same browser/session.
 - fixed the initialization freeze introduced in v1.1
 - audio initialization can no longer block the invitation
 - if any compilation animation fails, the full transmission is revealed automatically
+
+
+## v1.3 initialization fix
+- replaced async compilation with a timer-driven sequence
+- added a 4.2 second watchdog that always reveals the final transmission
+- added cache-busting query strings to CSS and JavaScript
+- prevents GitHub Pages/browser caches from reusing the old broken script

@@ -3,114 +3,173 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#05060a" />
-  <title>MuSyChEN–626 // Transmission Detected</title>
+  <meta name="theme-color" content="#03050a" />
+  <title>MuSyChEN–626 // Anomaly Detected</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <canvas id="codeRain" aria-hidden="true"></canvas>
+  <div class="side-fade" aria-hidden="true"></div>
   <div class="noise" aria-hidden="true"></div>
   <div class="scanlines" aria-hidden="true"></div>
-  <div class="warp-overlay" aria-hidden="true"></div>
 
-  <main class="transmission-shell">
-    <div class="statusbar">
-      <span>INTERDIMENSIONAL MONITORING SYSTEM</span>
-      <span class="live"><i></i> SIGNAL ACTIVE</span>
-    </div>
+  <aside id="leftRail" class="compile-rail left" aria-hidden="true"></aside>
+  <aside id="rightRail" class="compile-rail right" aria-hidden="true"></aside>
 
-    <section class="terminal" id="terminal">
-      <p class="warning glitch" data-text="⚠ WARNING ⚠">⚠ WARNING ⚠</p>
-      <h1 class="glitch" data-text="TIME–SPACE ANOMALY DETECTED">
-        TIME–SPACE ANOMALY DETECTED
-      </h1>
-
-      <div class="divider"></div>
-
-      <p class="label">ORIGIN UNIVERSE</p>
-      <p class="universe">MuSyChEN–626</p>
-
-      <div class="telemetry">
-        <p><span>Dimensional integrity:</span> <strong class="unstable">UNSTABLE</strong></p>
-        <p><span>Nexus connection:</span> <strong>ESTABLISHED</strong></p>
-        <p><span>Unknown Variants detected:</span> <strong>IMPOSSIBLE TO DETERMINE</strong></p>
-      </div>
-
-      <p class="convergence">A CONVERGENCE IS IMMINENT.</p>
-
-      <blockquote>
-        <p>You are receiving this transmission because a version of you has been detected across the Nexus.</p>
-        <p>Current calculations indicate that, during the Convergence, you will come into contact with your Variant.</p>
-        <p class="keyline">For one night, the boundaries between who you are and who you could have been will cease to exist.</p>
-        <p>You are expected to converge with this alternate version of yourself and enter MuSyChEN–626 as a new Variant.</p>
-      </blockquote>
-
-      <div class="calculation">
-        <span>CONVERGENCE DATE</span>
-        <strong id="calcText">PENDING CALCULATION<span class="dots">...</span></strong>
-      </div>
-
-      <p class="do-not-close">DO NOT CLOSE THIS TRANSMISSION.</p>
-
-      <button id="accessButton" class="access-button">
-        <span>[</span> ACCESS THE NEXUS <span>]</span>
-      </button>
-    </section>
-
-    <section id="nexusSection" class="nexus-section" hidden>
-      <div class="section-divider"></div>
-      <p class="section-kicker">ACCESS SEQUENCE COMPLETE</p>
-      <h2>NEXUS PROTOCOLS UNLOCKED</h2>
-
-      <div class="nexus-grid">
-        <article class="nexus-card">
-          <p class="nexus-label">STATUS</p>
-          <p class="nexus-main">CONVERGENCE CONFIRMED</p>
-          <p class="nexus-copy">The walls between realities are weakening. MuSyChEN–626 is now receiving incoming Variants.</p>
-        </article>
-
-        <article class="nexus-card">
-          <p class="nexus-label">INSTRUCTION</p>
-          <p class="nexus-main">REPORT AS YOUR VARIANT</p>
-          <p class="nexus-copy">Arrive not necessarily as someone else — but as yourself from another universe.</p>
-        </article>
-
-        <article class="nexus-card">
-          <p class="nexus-label">DRESS PROTOCOL</p>
-          <p class="nexus-main">COME AS YOURSELF</p>
-          <p class="nexus-copy">Just not necessarily the version of you from this universe.</p>
-        </article>
-
-        <article class="nexus-card">
-          <p class="nexus-label">CLASSIFIED</p>
-          <p class="nexus-main">NEXUS DATA INCOMPLETE</p>
-          <p class="nexus-copy">Date, location and further transmission details remain under calculation.</p>
-        </article>
-      </div>
-
-      <div class="next-step">
-        <p class="next-step-title">NEXT TRANSMISSION TARGET</p>
-        <p>Upcoming sections can reveal the story, dress code, RSVP and classified event coordinates.</p>
-      </div>
-    </section>
-
-    <footer>
-      <span>REALITY INDEX 626</span>
-      <span id="clock"></span>
-      <span>CONNECTION: ENCRYPTED</span>
-    </footer>
-  </main>
-
-  <div id="accessOverlay" class="access-overlay" hidden>
-    <div class="access-overlay-panel">
-      <p class="overlay-kicker">NEXUS HANDSHAKE INITIATED</p>
-      <h3>AUTHENTICATING VARIANT</h3>
-      <div class="progress-shell">
-        <div id="progressBar" class="progress-bar"></div>
-      </div>
-      <p id="progressText" class="progress-text">Decoding transmission…</p>
+  <div id="bootGate" class="boot-gate">
+    <div class="boot-box">
+      <p class="boot-id">SIGNAL // MuSyChEN–626</p>
+      <h1>INCOMING<br>TRANSMISSION</h1>
+      <p class="boot-copy">An anomalous interdimensional signal has been detected.</p>
+      <button id="initializeButton" class="primary-button">[ INITIALIZE TRANSMISSION ]</button>
+      <p class="micro">Audio-enabled // secure channel</p>
     </div>
   </div>
+
+  <main id="site" class="site hidden-site">
+    <section class="transmission-shell">
+      <div class="statusbar">
+        <span>INTERDIMENSIONAL MONITORING SYSTEM</span>
+        <span class="live"><i></i> SIGNAL ACTIVE</span>
+      </div>
+
+      <div class="terminal">
+        <div id="compileOutput" class="compile-output"></div>
+
+        <div id="finalTransmission" class="final-transmission is-hidden">
+          <p class="warning">⚠ WARNING ⚠</p>
+          <h2>TIME–SPACE ANOMALY DETECTED</h2>
+
+          <div class="divider"></div>
+
+          <p class="label">ORIGIN UNIVERSE</p>
+          <p class="universe">MuSyChEN–626</p>
+
+          <div class="telemetry">
+            <p><span>Dimensional integrity:</span> <strong class="unstable">UNSTABLE</strong></p>
+            <p><span>Nexus connection:</span> <strong>ESTABLISHED</strong></p>
+            <p><span>Unknown Variants detected:</span> <strong>IMPOSSIBLE TO DETERMINE</strong></p>
+          </div>
+
+          <p class="convergence">A CONVERGENCE IS IMMINENT.</p>
+
+          <blockquote>
+            <p>You are receiving this transmission because a version of you has been detected across the Nexus.</p>
+            <p>Current calculations indicate that, during the Convergence, you will come into contact with your Variant.</p>
+            <p class="keyline">For one night, the boundaries between who you are and who you could have been will cease to exist.</p>
+            <p>You are expected to converge with this alternate version of yourself and enter MuSyChEN–626 as a new Variant.</p>
+          </blockquote>
+
+          <div class="calculation">
+            <span>CONVERGENCE DATE</span>
+            <strong>PENDING CALCULATION<span class="blink">_</span></strong>
+          </div>
+
+          <p class="do-not-close">DO NOT CLOSE THIS TRANSMISSION.</p>
+          <button id="accessButton" class="primary-button">[ ACCESS THE NEXUS ]</button>
+        </div>
+      </div>
+
+      <footer>
+        <span>REALITY INDEX 626</span>
+        <button id="audioToggle" class="audio-toggle">AUDIO: ON</button>
+        <span id="clock"></span>
+      </footer>
+    </section>
+
+    <section id="registry" class="registry is-hidden">
+      <div class="registry-head">
+        <p class="section-kicker">NEXUS ACCESS GRANTED</p>
+        <h2>VARIANT REGISTRATION</h2>
+        <p>Your signal must be calibrated before the Convergence.</p>
+      </div>
+
+      <div class="progress-dots">
+        <button class="step-dot active" data-step="1">01</button>
+        <button class="step-dot" data-step="2">02</button>
+        <button class="step-dot" data-step="3">03</button>
+      </div>
+
+      <form id="variantForm">
+        <fieldset class="form-step active" data-step="1">
+          <legend>01 // SIGNAL RESPONSE</legend>
+
+          <label>
+            PRIME IDENTIFIER
+            <input id="guestName" type="text" placeholder="Your name" required />
+          </label>
+
+          <div class="question">
+            <p>DO YOU INTEND TO CROSS INTO MuSyChEN–626?</p>
+            <div class="choice-grid">
+              <label class="choice"><input type="radio" name="attendance" value="I WILL CONVERGE" required><span>I WILL CONVERGE</span></label>
+              <label class="choice"><input type="radio" name="attendance" value="SIGNAL UNCERTAIN"><span>SIGNAL UNCERTAIN</span></label>
+              <label class="choice"><input type="radio" name="attendance" value="UNABLE TO CROSS"><span>UNABLE TO CROSS</span></label>
+            </div>
+          </div>
+
+          <button type="button" class="next-button" data-next="2">CONTINUE CALIBRATION →</button>
+        </fieldset>
+
+        <fieldset class="form-step" data-step="2">
+          <legend>02 // VARIANT CALIBRATION</legend>
+
+          <div class="question">
+            <p>EXPECTED MANIFESTATION</p>
+            <div class="choice-grid">
+              <label class="choice"><input type="radio" name="manifestation" value="FULL VARIANT"><span>FULL VARIANT<br><small>Costume / transformation</small></span></label>
+              <label class="choice"><input type="radio" name="manifestation" value="PARTIAL VARIANT"><span>PARTIAL VARIANT<br><small>Subtle alternate self</small></span></label>
+              <label class="choice"><input type="radio" name="manifestation" value="PRIME FORM"><span>PRIME FORM<br><small>No costume needed</small></span></label>
+              <label class="choice"><input type="radio" name="manifestation" value="UNDECIDED"><span>UNDECIDED<br><small>Reality still unstable</small></span></label>
+            </div>
+          </div>
+
+          <label>
+            WHAT CHANGED IN YOUR UNIVERSE?
+            <textarea id="variantStory" rows="4" placeholder="Example: In my universe I became a Winx, a villain, a medieval alchemist, a rockstar…"></textarea>
+          </label>
+
+          <div class="form-nav">
+            <button type="button" class="back-button" data-back="1">← BACK</button>
+            <button type="button" class="next-button" data-next="3">CONTINUE →</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-step" data-step="3">
+          <legend>03 // BIOLOGICAL COMPATIBILITY</legend>
+
+          <p class="helper">Select every protocol that applies.</p>
+          <div class="choice-grid compact">
+            <label class="choice"><input type="checkbox" name="diet" value="VEGAN"><span>VEGAN</span></label>
+            <label class="choice"><input type="checkbox" name="diet" value="VEGETARIAN"><span>VEGETARIAN</span></label>
+            <label class="choice"><input type="checkbox" name="diet" value="CELIAC / STRICT GLUTEN-FREE"><span>CELIAC / STRICT GLUTEN-FREE</span></label>
+            <label class="choice"><input type="checkbox" name="diet" value="OMNIVORE"><span>OMNIVORE</span></label>
+          </div>
+
+          <label>
+            ALLERGIES / OTHER FOOD PROTOCOLS
+            <input id="foodNotes" type="text" placeholder="Optional" />
+          </label>
+
+          <div class="form-nav">
+            <button type="button" class="back-button" data-back="2">← BACK</button>
+            <button type="submit" class="primary-button">[ REGISTER VARIANT ]</button>
+          </div>
+        </fieldset>
+      </form>
+
+      <div id="clearanceCard" class="clearance-card is-hidden">
+        <p class="section-kicker">REGISTRATION ACCEPTED</p>
+        <p class="clearance-label">TEMPORARY VARIANT ID</p>
+        <h3 id="variantId">VAR–626–0000</h3>
+        <p id="clearanceName"></p>
+        <p>Your Variant signature has been indexed. Further coordinates remain classified.</p>
+        <p class="micro">NEXUS CLEARANCE // LEVEL 01</p>
+      </div>
+
+      <p class="prototype-warning">Prototype note: this preview currently saves registration only in this browser. Before invitations are sent, it will be connected to the shared guest list.</p>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>

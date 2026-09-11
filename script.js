@@ -16,7 +16,7 @@ const clearanceCard = $("#clearanceCard");
   Paste the deployed Apps Script /exec URL between the quotes below.
   Leave blank while testing locally.
 */
-const GOOGLE_SHEETS_ENDPOINT = "";
+const GOOGLE_SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzBLjE70e91YcfUS25snEoM4IAqVWGm67uXor1Sh328dkzDHj-N2b6HNrQpablru5rQ/exec";
 // Phase 1 registry endpoint.
 
 const PHASE2_GOOGLE_SHEETS_ENDPOINT = "";

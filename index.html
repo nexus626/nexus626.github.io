@@ -352,6 +352,92 @@
     </section>
   </main>
 
-  <script src="script.js?v=1.5-phase1"></script>
+  <script src="script.js?v=1.6-phase1"></script>
+
+  <script>
+    // Independent fallback for Phase 1 non-attendance responses.
+    // Runs in capture phase so this path does not depend on the external script.
+    (function () {
+      const form = document.getElementById("variantForm");
+      if (!form) return;
+
+      const endpoint = "https://script.google.com/macros/s/AKfycbzBLjE70e91YcfUS25snEoM4IAqVWGm67uXor1Sh328dkzDHj-N2b6HNrQpablru5rQ/exec";
+
+      form.addEventListener("submit", async function (event) {
+        const selected = document.querySelector('input[name="phase1CrossingStatus"]:checked');
+        if (!selected || selected.value !== "NOT ATTENDING") return;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        const firstName = (document.getElementById("guestFirstName")?.value || "").trim() || "UNKNOWN";
+        const lastName = (document.getElementById("guestLastName")?.value || "").trim() || "UNKNOWN";
+        const fullName = (firstName + " " + lastName).trim();
+
+        let id = "VAR-626-NOPE";
+        try {
+          const bytes = new Uint32Array(1);
+          crypto.getRandomValues(bytes);
+          id = "VAR-626-" + (bytes[0] % (36 ** 4)).toString(36).toUpperCase().padStart(4, "0");
+        } catch (_) {}
+
+        const payload = {
+          timestamp: new Date().toISOString(),
+          nexusId: id,
+          firstName,
+          lastName,
+          fullName,
+          crossingStatus: "NOT ATTENDING",
+          partySize: 0,
+          availableDates: [],
+          "2026-12-10": false,
+          "2026-12-11": false,
+          "2026-12-12": false,
+          "2026-12-13": false,
+          "2026-12-14": false,
+          "2026-12-15": false,
+          "2026-12-16": false,
+          "2026-12-17": false,
+          "2026-12-18": false,
+          "2026-12-19": false,
+          dietaryRequirements: "",
+          foodNotes: ""
+        };
+
+        localStorage.setItem("nexus626_non_attendance", JSON.stringify(payload));
+
+        let sent = false;
+        try {
+          await fetch(endpoint, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {"Content-Type":"text/plain;charset=utf-8"},
+            body: JSON.stringify(payload)
+          });
+          sent = true;
+        } catch (_) {}
+
+        form.classList.add("is-hidden");
+
+        const normalCard = document.getElementById("clearanceCard");
+        if (normalCard) normalCard.classList.add("is-hidden");
+
+        const declineCard = document.getElementById("declineCard");
+        const declineName = document.getElementById("declineName");
+        if (declineName) declineName.textContent = fullName.toUpperCase() + " // CROSSING NOT EXPECTED";
+        if (declineCard) {
+          declineCard.classList.remove("is-hidden");
+          declineCard.scrollIntoView({behavior:"smooth", block:"center"});
+        }
+
+        const status = document.getElementById("storageStatus");
+        if (status) {
+          status.textContent = sent
+            ? "NEXUS DATABASE // NON-ATTENDANCE SIGNAL TRANSMITTED"
+            : "NEXUS DATABASE // REMOTE LINK ERROR — LOCAL BACKUP CREATED";
+        }
+      }, true);
+    })();
+  </script>
 </body>
 </html>

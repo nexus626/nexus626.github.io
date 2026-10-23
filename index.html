@@ -100,14 +100,32 @@
             </label>
           </div>
 
-          <label>
-            EXPECTED CROSSING PARTY
-            <input id="partySize" type="number" min="1" max="10" value="1" required />
-            <small class="field-note">Total expected number of people, including you.</small>
-          </label>
-
           <div class="question">
-            <p>TEMPORAL COMPATIBILITY SCAN</p>
+            <p>CROSSING STATUS</p>
+            <p class="helper">Tell the Nexus whether a crossing remains possible in your timeline.</p>
+
+            <div class="choice-grid">
+              <label class="choice">
+                <input type="radio" name="phase1CrossingStatus" value="POSSIBLE" required>
+                <span>I MAY CROSS THE NEXUS</span>
+              </label>
+
+              <label class="choice">
+                <input type="radio" name="phase1CrossingStatus" value="NOT ATTENDING">
+                <span>I WILL NOT CROSS THE NEXUS</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="phase1AttendanceDetails">
+            <label>
+              EXPECTED CROSSING PARTY
+              <input id="partySize" type="number" min="1" max="10" value="1" required />
+              <small class="field-note">Total expected number of people, including you.</small>
+            </label>
+
+            <div class="question">
+              <p>TEMPORAL COMPATIBILITY SCAN</p>
             <p class="helper">
               Current calculations identify 10–19 December 2026 as possible Convergence dates.
               Select <strong>every date</strong> on which your timeline could allow you to attend.
@@ -158,14 +176,15 @@
             </div>
           </div>
 
-          <label>
-            ALLERGIES / INTOLERANCES / OTHER FOOD REQUIREMENTS
-            <textarea id="foodNotes" rows="3" placeholder="Please include anything relevant for you or accompanying guests."></textarea>
-          </label>
+            <label>
+              ALLERGIES / INTOLERANCES / OTHER FOOD REQUIREMENTS
+              <textarea id="foodNotes" rows="3" placeholder="Please include anything relevant for you or accompanying guests."></textarea>
+            </label>
+          </div>
 
           <label class="privacy-consent">
             <input id="privacyConsent" type="checkbox" required>
-            <span>I understand that my name, party size, date availability and food requirements will be used only to organise the MuSyChEN–626 event.</span>
+            <span>I understand that my response, name, party size, date availability and food requirements will be used only to organise the MuSyChEN–626 event.</span>
           </label>
 
           <button type="submit" class="primary-button">[ REGISTER SIGNAL ]</button>

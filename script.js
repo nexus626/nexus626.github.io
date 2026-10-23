@@ -320,7 +320,7 @@ variantForm.addEventListener("submit", async (e) => {
   const firstName = document.querySelector("#guestFirstName").value.trim() || "UNKNOWN";
   const lastName = document.querySelector("#guestLastName").value.trim() || "UNKNOWN";
   const fullName = `${firstName} ${lastName}`.trim();
-  const partySize = notAttending ? 0 : Math.max(1, Number(document.querySelector("#partySize").value) || 1);
+  const partySize = notAttending ? "0" : Math.max(1, Number(document.querySelector("#partySize").value) || 1);
   const id = createVariantId();
 
   const dateFlags = {};

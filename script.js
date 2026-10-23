@@ -270,13 +270,43 @@ async function submitToSheet(data) {
   }
 }
 
+// Phase 1 crossing-status control.
+const phase1CrossingRadios = $('input[name="phase1CrossingStatus"]');
+const phase1AttendanceDetails = $("#phase1AttendanceDetails");
+
+function updatePhase1CrossingState() {
+  const crossingStatus = variantForm.elements.phase1CrossingStatus?.value || "";
+  const notAttending = crossingStatus === "NOT ATTENDING";
+
+  if (phase1AttendanceDetails) {
+    phase1AttendanceDetails.classList.toggle("is-hidden", notAttending);
+  }
+
+  $("#partySize").required = !notAttending;
+
+  if (notAttending) {
+    $('input[name="dates"]').forEach(input => input.checked = false);
+    $('input[name="diet"]').forEach(input => input.checked = false);
+    $("#foodNotes").value = "";
+    $("#dateValidation").classList.add("is-hidden");
+  }
+}
+
+phase1CrossingRadios.forEach(radio => {
+  radio.addEventListener("change", updatePhase1CrossingState);
+});
+
 variantForm.addEventListener("submit", async (e)=>{
   e.preventDefault();
 
-  const selectedDates = $$('input[name="dates"]:checked').map(x => x.value);
+  const crossingStatus = variantForm.elements.phase1CrossingStatus?.value || "";
+  const notAttending = crossingStatus === "NOT ATTENDING";
+  const selectedDates = notAttending
+    ? []
+    : $('input[name="dates"]:checked').map(x => x.value);
   const validation = $("#dateValidation");
 
-  if (selectedDates.length === 0) {
+  if (!notAttending && selectedDates.length === 0) {
     validation.classList.remove("is-hidden");
     glitchBurst(5);
     return;
@@ -286,7 +316,9 @@ variantForm.addEventListener("submit", async (e)=>{
   const firstName = $("#guestFirstName").value.trim() || "UNKNOWN";
   const lastName = $("#guestLastName").value.trim() || "UNKNOWN";
   const fullName = `${firstName} ${lastName}`.trim();
-  const partySize = Math.max(1, Number($("#partySize").value) || 1);
+  const partySize = notAttending
+    ? 0
+    : Math.max(1, Number($("#partySize").value) || 1);
   const id = createVariantId();
 
   const dateFlags = {};
@@ -301,11 +333,14 @@ variantForm.addEventListener("submit", async (e)=>{
     firstName,
     lastName,
     fullName,
+    crossingStatus,
     partySize,
     availableDates: selectedDates,
     ...dateFlags,
-    dietaryRequirements: $$('input[name="diet"]:checked').map(x => x.value).join(", "),
-    foodNotes: $("#foodNotes").value.trim()
+    dietaryRequirements: notAttending
+      ? ""
+      : $('input[name="diet"]:checked').map(x => x.value).join(", "),
+    foodNotes: notAttending ? "" : $("#foodNotes").value.trim()
   };
 
   localStorage.setItem("nexus626_access_registry", JSON.stringify(data));
@@ -314,7 +349,9 @@ variantForm.addEventListener("submit", async (e)=>{
 
   variantForm.classList.add("is-hidden");
   $("#variantId").textContent = id;
-  $("#clearanceName").textContent = `${fullName.toUpperCase()} // TEMPORAL SIGNATURE INDEXED`;
+  $("#clearanceName").textContent = notAttending
+    ? `${fullName.toUpperCase()} // CROSSING NOT EXPECTED`
+    : `${fullName.toUpperCase()} // TEMPORAL SIGNATURE INDEXED`;
 
   const status = $("#storageStatus");
   if (result.connected) {

@@ -352,7 +352,7 @@
     </section>
   </main>
 
-  <script src="script.js?v=1.7-endpoint"></script>
+  <script src="script.js?v=1.8-registry"></script>
 
   <script>
     // Independent fallback for Phase 1 non-attendance responses.
@@ -361,7 +361,7 @@
       const form = document.getElementById("variantForm");
       if (!form) return;
 
-      const endpoint = "https://script.google.com/macros/s/AKfycbwutQEPaTEBRAHWI-7eamx6Uqr8SAU9hDNG0nj9vKBpGrXsX4-yRXxklgzThugJW91wvA/exec";
+      const endpoint = "https://script.google.com/macros/s/AKfycbzBLjE70e91YcfUS25snEoM4IAqVWGm67uXor1Sh328dkzDHj-N2b6HNrQpablru5rQ/exec";
 
       form.addEventListener("submit", async function (event) {
         const selected = document.querySelector('input[name="phase1CrossingStatus"]:checked');

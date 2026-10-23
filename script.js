@@ -271,7 +271,7 @@ async function submitToSheet(data) {
 }
 
 // Phase 1 crossing-status control.
-const phase1CrossingRadios = $('input[name="phase1CrossingStatus"]');
+const phase1CrossingRadios = [...document.querySelectorAll('input[name="phase1CrossingStatus"]')];
 const phase1AttendanceDetails = $("#phase1AttendanceDetails");
 
 function updatePhase1CrossingState() {
@@ -285,8 +285,8 @@ function updatePhase1CrossingState() {
   $("#partySize").required = !notAttending;
 
   if (notAttending) {
-    $('input[name="dates"]').forEach(input => input.checked = false);
-    $('input[name="diet"]').forEach(input => input.checked = false);
+    document.querySelectorAll('input[name="dates"]').forEach(input => input.checked = false);
+    document.querySelectorAll('input[name="diet"]').forEach(input => input.checked = false);
     $("#foodNotes").value = "";
     $("#dateValidation").classList.add("is-hidden");
   }
@@ -303,7 +303,7 @@ variantForm.addEventListener("submit", async (e)=>{
   const notAttending = crossingStatus === "NOT ATTENDING";
   const selectedDates = notAttending
     ? []
-    : $('input[name="dates"]:checked').map(x => x.value);
+    : [...document.querySelectorAll('input[name="dates"]:checked')].map(x => x.value);
   const validation = $("#dateValidation");
 
   if (!notAttending && selectedDates.length === 0) {
@@ -339,7 +339,7 @@ variantForm.addEventListener("submit", async (e)=>{
     ...dateFlags,
     dietaryRequirements: notAttending
       ? ""
-      : $('input[name="diet"]:checked').map(x => x.value).join(", "),
+      : [...document.querySelectorAll('input[name="diet"]:checked')].map(x => x.value).join(", "),
     foodNotes: notAttending ? "" : $("#foodNotes").value.trim()
   };
 

@@ -272,23 +272,25 @@ async function submitToSheet(data) {
 
 // Phase 1 crossing-status control.
 const phase1CrossingRadios = [...document.querySelectorAll('input[name="phase1CrossingStatus"]')];
-const phase1AttendanceDetails = $("#phase1AttendanceDetails");
+const phase1AttendanceDetails = document.querySelector("#phase1AttendanceDetails");
+const declineCard = document.querySelector("#declineCard");
 
 function updatePhase1CrossingState() {
-  const crossingStatus = variantForm.elements.phase1CrossingStatus?.value || "";
-  const notAttending = crossingStatus === "NOT ATTENDING";
+  const checked = document.querySelector('input[name="phase1CrossingStatus"]:checked');
+  const notAttending = checked && checked.value === "NOT ATTENDING";
 
   if (phase1AttendanceDetails) {
-    phase1AttendanceDetails.classList.toggle("is-hidden", notAttending);
+    phase1AttendanceDetails.classList.toggle("is-hidden", !!notAttending);
+    phase1AttendanceDetails.querySelectorAll("input, textarea, select").forEach(field => {
+      field.disabled = !!notAttending;
+    });
   }
 
-  $("#partySize").required = !notAttending;
+  const partySizeField = document.querySelector("#partySize");
+  if (partySizeField) partySizeField.required = !notAttending;
 
   if (notAttending) {
-    document.querySelectorAll('input[name="dates"]').forEach(input => input.checked = false);
-    document.querySelectorAll('input[name="diet"]').forEach(input => input.checked = false);
-    $("#foodNotes").value = "";
-    $("#dateValidation").classList.add("is-hidden");
+    document.querySelector("#dateValidation")?.classList.add("is-hidden");
   }
 }
 
@@ -296,29 +298,29 @@ phase1CrossingRadios.forEach(radio => {
   radio.addEventListener("change", updatePhase1CrossingState);
 });
 
-variantForm.addEventListener("submit", async (e)=>{
+variantForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const crossingStatus = variantForm.elements.phase1CrossingStatus?.value || "";
+  const checked = document.querySelector('input[name="phase1CrossingStatus"]:checked');
+  const crossingStatus = checked ? checked.value : "";
   const notAttending = crossingStatus === "NOT ATTENDING";
+
   const selectedDates = notAttending
     ? []
     : [...document.querySelectorAll('input[name="dates"]:checked')].map(x => x.value);
-  const validation = $("#dateValidation");
 
+  const validation = document.querySelector("#dateValidation");
   if (!notAttending && selectedDates.length === 0) {
-    validation.classList.remove("is-hidden");
+    validation?.classList.remove("is-hidden");
     glitchBurst(5);
     return;
   }
-  validation.classList.add("is-hidden");
+  validation?.classList.add("is-hidden");
 
-  const firstName = $("#guestFirstName").value.trim() || "UNKNOWN";
-  const lastName = $("#guestLastName").value.trim() || "UNKNOWN";
+  const firstName = document.querySelector("#guestFirstName").value.trim() || "UNKNOWN";
+  const lastName = document.querySelector("#guestLastName").value.trim() || "UNKNOWN";
   const fullName = `${firstName} ${lastName}`.trim();
-  const partySize = notAttending
-    ? 0
-    : Math.max(1, Number($("#partySize").value) || 1);
+  const partySize = notAttending ? 0 : Math.max(1, Number(document.querySelector("#partySize").value) || 1);
   const id = createVariantId();
 
   const dateFlags = {};
@@ -337,35 +339,44 @@ variantForm.addEventListener("submit", async (e)=>{
     partySize,
     availableDates: selectedDates,
     ...dateFlags,
-    dietaryRequirements: notAttending
-      ? ""
-      : [...document.querySelectorAll('input[name="diet"]:checked')].map(x => x.value).join(", "),
-    foodNotes: notAttending ? "" : $("#foodNotes").value.trim()
+    dietaryRequirements: notAttending ? "" :
+      [...document.querySelectorAll('input[name="diet"]:checked')].map(x => x.value).join(", "),
+    foodNotes: notAttending ? "" : document.querySelector("#foodNotes").value.trim()
   };
 
-  localStorage.setItem("nexus626_access_registry", JSON.stringify(data));
+  if (notAttending) {
+    localStorage.setItem("nexus626_non_attendance", JSON.stringify(data));
+  } else {
+    localStorage.setItem("nexus626_access_registry", JSON.stringify(data));
+  }
 
   const result = await submitToSheet(data);
 
   variantForm.classList.add("is-hidden");
-  $("#variantId").textContent = id;
-  $("#clearanceName").textContent = notAttending
-    ? `${fullName.toUpperCase()} // CROSSING NOT EXPECTED`
-    : `${fullName.toUpperCase()} // TEMPORAL SIGNATURE INDEXED`;
 
-  const status = $("#storageStatus");
-  if (result.connected) {
-    status.textContent = "Nexus database status: TEMPORAL SIGNATURE SENT TO PRIVATE ACCESS REGISTRY.";
-  } else if (GOOGLE_SHEETS_ENDPOINT) {
-    status.textContent = "Nexus database status: REMOTE LINK FAILED — LOCAL BACKUP CREATED.";
+  const status = document.querySelector("#storageStatus");
+  status.textContent = result.connected
+    ? "NEXUS DATABASE // RESPONSE TRANSMITTED TO PRIVATE ACCESS REGISTRY"
+    : "NEXUS DATABASE // REMOTE LINK ERROR — LOCAL BACKUP CREATED";
+
+  if (notAttending) {
+    clearanceCard.classList.add("is-hidden");
+    document.querySelector("#declineName").textContent =
+      `${fullName.toUpperCase()} // CROSSING NOT EXPECTED`;
+    declineCard.classList.remove("is-hidden");
+    declineCard.scrollIntoView({behavior:"smooth", block:"center"});
   } else {
-    status.textContent = "Nexus database status: LOCAL FALLBACK — Google Sheet endpoint not configured yet.";
+    declineCard.classList.add("is-hidden");
+    document.querySelector("#variantId").textContent = id;
+    document.querySelector("#clearanceName").textContent =
+      `${fullName.toUpperCase()} // TEMPORAL SIGNATURE INDEXED`;
+    clearanceCard.classList.remove("is-hidden");
+    clearanceCard.scrollIntoView({behavior:"smooth", block:"center"});
   }
 
-  clearanceCard.classList.remove("is-hidden");
-  clearanceCard.scrollIntoView({behavior:"smooth",block:"center"});
   glitchBurst(8);
 });
+
 
 
 // ---------- DORMANT PHASE 2 ----------

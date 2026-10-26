@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#03050a" />
   <title>MuSyChEN–626 // Anomaly Detected</title>
-  <link rel="stylesheet" href="styles.css?v=1.4-stable" />
+  <link rel="stylesheet" href="styles.css?v=2.0-phase2-preview" />
 </head>
 <body>
+  <div id="supernovaBurst" class="supernova-burst" aria-hidden="true"></div>
   <canvas id="codeRain" aria-hidden="true"></canvas>
   <div class="side-fade" aria-hidden="true"></div>
   <div class="noise" aria-hidden="true"></div>
@@ -350,9 +351,191 @@
         </div>
       </div>
     </section>
+
+    <section id="phase2Preview" class="phase2-preview is-hidden">
+      <div class="phase2-statusbar">
+        <span>MuSyChEN–626 // CONVERGENCE CONTROL</span>
+        <span class="phase2-online"><i></i> RECOGNITION ONLINE</span>
+      </div>
+
+      <div class="phase2-hero">
+        <p class="phase2-kicker">CONVERGENCE PROTOCOL // PHASE 2 ACTIVE</p>
+        <h2>A STABLE NEXUS HAS BEEN IDENTIFIED</h2>
+
+        <div class="resolved-telemetry">
+          <div>
+            <span>CONVERGENCE DATE</span>
+            <strong>18 DECEMBER 2026</strong>
+          </div>
+          <div>
+            <span>ENTRY POINT</span>
+            <strong>B EVOLUTION · TORINO</strong>
+          </div>
+          <div>
+            <span>TEMPORAL ENTRY HOUR</span>
+            <strong class="pending-value">PENDING<span class="blink">_</span></strong>
+          </div>
+        </div>
+
+        <div class="system-resolution">
+          <span>NEXUS TOPOLOGY // <strong>STABLE</strong></span>
+          <span>TEMPORAL SOLUTION // <strong>RESOLVED</strong></span>
+          <span>ENTRY POINT // <strong>IDENTIFIED</strong></span>
+          <span>VARIANT RECOGNITION // <strong>AVAILABLE</strong></span>
+        </div>
+      </div>
+
+      <div class="recognition-console">
+        <div class="recognition-console-head">
+          <span>VARIANT RECOGNITION PROTOCOL</span>
+          <span>IDENTITY CHANNEL // OPEN</span>
+        </div>
+
+        <div class="variant-explainer">
+          <p class="phase2-kicker">WHAT IS A VARIANT?</p>
+          <h3>ANOTHER POSSIBLE VERSION OF YOU.</h3>
+          <p>
+            A Variant is another version of yourself from another universe. It may be magical,
+            historical, futuristic, monstrous, cosmic, absurd, or inspired by an existing fictional universe.
+          </p>
+          <p class="variant-keyline">
+            You are not simply dressing as a character. You are imagining
+            <strong>who you might have become somewhere else in the Multiverse.</strong>
+          </p>
+          <div class="variant-examples">
+            <span>YOU AS A WINX FAIRY</span>
+            <span>YOU AS A VAMPIRE</span>
+            <span>YOU AS A MEDIEVAL ALCHEMIST</span>
+            <span>YOU AS A CYBERPUNK SCIENTIST</span>
+            <span>YOU AS A WITCH</span>
+            <span>YOU FROM A TIMELINE WHERE ONE DECISION CHANGED EVERYTHING</span>
+          </div>
+          <p class="prime-note">
+            Costumes are encouraged, but absolutely not required. If you prefer not to dress up,
+            select <strong>REMAIN PRIME</strong>.
+          </p>
+        </div>
+
+        <form id="phase2PreviewForm" class="phase2-form">
+          <fieldset>
+            <legend>01 // IDENTITY CHECK</legend>
+            <div class="name-grid">
+              <label>
+                FIRST NAME
+                <input id="p2FirstName" type="text" placeholder="First name" required />
+              </label>
+              <label>
+                LAST NAME
+                <input id="p2LastName" type="text" placeholder="Last name" required />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>02 // FINAL CROSSING STATUS</legend>
+            <div class="choice-grid">
+              <label class="choice phase2-choice">
+                <input type="radio" name="p2CrossingStatus" value="I WILL CONVERGE" required>
+                <span>I WILL CONVERGE</span>
+              </label>
+              <label class="choice phase2-choice">
+                <input type="radio" name="p2CrossingStatus" value="I WILL NOT CONVERGE">
+                <span>I WILL NOT CONVERGE</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div id="p2AttendingFields" class="is-hidden">
+            <fieldset>
+              <legend>03 // CROSSING PARTY</legend>
+              <label>
+                FINAL CROSSING PARTY
+                <input id="p2PartySize" type="number" min="1" max="10" value="1" />
+                <small class="field-note">Total number of travellers attending, including you.</small>
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>04 // VARIANT STATUS</legend>
+              <p class="helper">Choose how your identity will cross the Nexus.</p>
+              <div class="choice-grid">
+                <label class="choice phase2-choice">
+                  <input type="radio" name="p2VariantStatus" value="DECLARED">
+                  <span><strong>DECLARE A VARIANT</strong><small>I will cross as an alternate version of myself.</small></span>
+                </label>
+                <label class="choice phase2-choice">
+                  <input type="radio" name="p2VariantStatus" value="PRIME">
+                  <span><strong>REMAIN PRIME</strong><small>No Variant declaration required.</small></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset id="p2VariantFields" class="variant-fields is-hidden">
+              <legend>05 // VARIANT DECLARATION</legend>
+
+              <label>
+                VARIANT DESIGNATION
+                <input id="p2Designation" type="text" placeholder="e.g. RED FAIRY VARIANT / VAMPIRE RESEARCHER" />
+                <small class="field-note">A short designation for the version of you crossing the Nexus.</small>
+              </label>
+
+              <label>
+                VARIANT DECLARATION
+                <textarea id="p2Declaration" rows="5" placeholder="Describe the version of yourself that will cross the Nexus."></textarea>
+              </label>
+
+              <label>
+                SPECIES / NATURE
+                <input id="p2Species" type="text" placeholder="e.g. Fairy / Human / Witch / Vampire / Android / Unknown entity" />
+              </label>
+            </fieldset>
+          </div>
+
+          <label class="privacy-consent">
+            <input id="p2Consent" type="checkbox" required>
+            <span>I understand that these details will be used to confirm attendance and prepare physical documentation for the Convergence.</span>
+          </label>
+
+          <p class="preview-warning">PREVIEW MODE // DATABASE TRANSMISSION DISABLED</p>
+          <button type="submit" class="primary-button">[ COMPLETE RECOGNITION ]</button>
+        </form>
+
+        <div id="p2VariantSuccess" class="phase2-result is-hidden">
+          <p class="phase2-kicker">VARIANT RECOGNISED</p>
+          <h3>IDENTITY SIGNATURE STABILISED</h3>
+          <p id="p2VariantSuccessName"></p>
+          <div class="passport-authorization">
+            <span>INTERDIMENSIONAL PASSPORT</span>
+            <strong>AUTHORIZED FOR PHYSICAL ISSUANCE</strong>
+          </div>
+          <p>Physical documentation will be issued at the Convergence.</p>
+          <p class="preview-warning">PREVIEW MODE // NO DATA WAS TRANSMITTED</p>
+        </div>
+
+        <div id="p2PrimeSuccess" class="phase2-result is-hidden">
+          <p class="phase2-kicker">PRIME IDENTITY CONFIRMED</p>
+          <h3>NO CROSS-REALITY DIVERGENCE DECLARED</h3>
+          <p id="p2PrimeSuccessName"></p>
+          <div class="passport-authorization">
+            <span>INTERDIMENSIONAL PASSPORT</span>
+            <strong>AUTHORIZED FOR PHYSICAL ISSUANCE</strong>
+          </div>
+          <p>Physical documentation will be issued at the Convergence.</p>
+          <p class="preview-warning">PREVIEW MODE // NO DATA WAS TRANSMITTED</p>
+        </div>
+
+        <div id="p2DeclineSuccess" class="phase2-result is-hidden">
+          <p class="phase2-kicker">SIGNAL RECEIVED</p>
+          <h3>NO CONVERGENCE EXPECTED</h3>
+          <p id="p2DeclineSuccessName"></p>
+          <p>Your final crossing status has been archived. No further action is required.</p>
+          <p class="preview-warning">PREVIEW MODE // NO DATA WAS TRANSMITTED</p>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <script src="script.js?v=1.9-zero-string"></script>
+  <script src="script.js?v=2.0-phase2-preview"></script>
 
   <script>
     // Independent fallback for Phase 1 non-attendance responses.

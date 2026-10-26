@@ -1,0 +1,74 @@
+[
+  {
+    "requestId": "TEST_20261026_DECLINE_SINGLE",
+    "firstName": "TEST_PHASE2",
+    "lastName": "DECLINE_SINGLE",
+    "crossingStatus": "I WILL NOT CONVERGE",
+    "finalPartySize": 0,
+    "variantStatus": "NOT ATTENDING",
+    "variantDesignation": "TEST Stellar Alchemist",
+    "variantDeclaration": "TEST ONLY — alternate researcher from a stellar laboratory.",
+    "species": "Human / stellar alchemist",
+    "nexusId": "TEST-626-0"
+  },
+  {
+    "requestId": "TEST_20261026_DECLINE_AFTER_VARIANT",
+    "firstName": "TEST_PHASE2",
+    "lastName": "DECLINE_AFTER_VARIANT",
+    "crossingStatus": "I WILL NOT CONVERGE",
+    "finalPartySize": 0,
+    "variantStatus": "DECLARED",
+    "variantDesignation": "TEST Stellar Alchemist",
+    "variantDeclaration": "TEST ONLY — alternate researcher from a stellar laboratory.",
+    "species": "Human / stellar alchemist",
+    "nexusId": "TEST-626-1"
+  },
+  {
+    "requestId": "TEST_20261026_PRIME_SINGLE",
+    "firstName": "TEST_PHASE2",
+    "lastName": "PRIME_SINGLE",
+    "crossingStatus": "I WILL CONVERGE",
+    "finalPartySize": 1,
+    "variantStatus": "PRIME",
+    "variantDesignation": "TEST Stellar Alchemist",
+    "variantDeclaration": "TEST ONLY — alternate researcher from a stellar laboratory.",
+    "species": "Human / stellar alchemist",
+    "nexusId": "TEST-626-2"
+  },
+  {
+    "requestId": "TEST_20261026_PRIME_PARTY",
+    "firstName": "TEST_PHASE2",
+    "lastName": "PRIME_PARTY",
+    "crossingStatus": "I WILL CONVERGE",
+    "finalPartySize": 2,
+    "variantStatus": "PRIME",
+    "variantDesignation": "TEST Stellar Alchemist",
+    "variantDeclaration": "TEST ONLY — alternate researcher from a stellar laboratory.",
+    "species": "Human / stellar alchemist",
+    "nexusId": "TEST-626-3"
+  },
+  {
+    "requestId": "TEST_20261026_VARIANT_SINGLE",
+    "firstName": "TEST_PHASE2",
+    "lastName": "VARIANT_SINGLE",
+    "crossingStatus": "I WILL CONVERGE",
+    "finalPartySize": 1,
+    "variantStatus": "DECLARED",
+    "variantDesignation": "TEST Stellar Alchemist",
+    "variantDeclaration": "TEST ONLY — alternate researcher from a stellar laboratory.",
+    "species": "Human / stellar alchemist",
+    "nexusId": "TEST-626-4"
+  },
+  {
+    "requestId": "TEST_20261026_VARIANT_PARTY",
+    "firstName": "TEST_PHASE2",
+    "lastName": "VARIANT_PARTY",
+    "crossingStatus": "I WILL CONVERGE",
+    "finalPartySize": 3,
+    "variantStatus": "DECLARED",
+    "variantDesignation": "TEST Stellar Alchemist",
+    "variantDeclaration": "TEST ONLY — alternate researcher from a stellar laboratory.",
+    "species": "Human / stellar alchemist",
+    "nexusId": "TEST-626-5"
+  }
+]

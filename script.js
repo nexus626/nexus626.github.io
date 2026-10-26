@@ -579,3 +579,134 @@ function addRailLine(el){
   while(el.children.length>48)el.firstChild.remove();
 }
 setInterval(()=>{addRailLine($("#leftRail")); if(Math.random()>.25)addRailLine($("#rightRail"));},150);
+
+
+// ===== PHASE 2 PREVIEW MODE =====
+const PHASE2_PREVIEW_MODE = new URLSearchParams(window.location.search).get("phase2") === "preview";
+
+function configurePhase2PreviewMode() {
+  if (!PHASE2_PREVIEW_MODE) return;
+
+  document.body.classList.add("phase2-preview-mode");
+
+  finalTransmission.innerHTML = `
+    <p class="section-kicker">COSMOLOGICAL EVENT DETECTED</p>
+    <h2>SUPERNOVA-CLASS SIGNATURE CONFIRMED</h2>
+    <div class="divider"></div>
+    <p class="label">ORIGIN UNIVERSE</p>
+    <p class="universe">MuSyChEN–626</p>
+    <div class="telemetry">
+      <p><span>Nexus topology:</span> <strong style="color:var(--green)">STABILISING</strong></p>
+      <p><span>Temporal solution:</span> <strong>RESOLVED</strong></p>
+      <p><span>Variant recognition:</span> <strong>AVAILABLE</strong></p>
+    </div>
+    <p class="convergence">A STABLE CONVERGENCE HAS BEEN IDENTIFIED.</p>
+    <blockquote>
+      <p>Initial signal mapping is complete.</p>
+      <p>Spacetime calculations have converged on a viable entry point.</p>
+      <p class="keyline">The Nexus is now capable of distinguishing incoming Variant identities.</p>
+    </blockquote>
+    <div class="calculation">
+      <span>CONVERGENCE DATE</span>
+      <strong>18 DECEMBER 2026</strong>
+    </div>
+    <p class="do-not-close">VARIANT RECOGNITION PROTOCOL READY.</p>
+    <button id="phase2AccessButton" class="primary-button">[ OPEN RECOGNITION PROTOCOL ]</button>
+  `;
+
+  initializeButton.addEventListener("click", () => {
+    setTimeout(() => {
+      document.body.classList.add("phase2-supernova");
+      if (audioCtx && audioEnabled) {
+        try {
+          radioGlitch(1.45);
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(1480, audioCtx.currentTime + .8);
+          gain.gain.setValueAtTime(.0001, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(.075, audioCtx.currentTime + .14);
+          gain.gain.exponentialRampToValueAtTime(.0001, audioCtx.currentTime + 1.15);
+          osc.connect(gain).connect(master);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 1.2);
+        } catch (_) {}
+      }
+      setTimeout(() => document.body.classList.remove("phase2-supernova"), 1700);
+    }, 700);
+  });
+
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("#phase2AccessButton");
+    if (!button) return;
+    event.preventDefault();
+    registry.classList.add("is-hidden");
+    const preview = document.querySelector("#phase2Preview");
+    preview.classList.remove("is-hidden");
+    preview.scrollIntoView({behavior:"smooth",block:"start"});
+    glitchBurst(6);
+  });
+}
+
+configurePhase2PreviewMode();
+
+const p2PreviewForm = document.querySelector("#phase2PreviewForm");
+if (p2PreviewForm) {
+  const attendingFields = document.querySelector("#p2AttendingFields");
+  const variantFields = document.querySelector("#p2VariantFields");
+
+  document.querySelectorAll('input[name="p2CrossingStatus"]').forEach(radio => {
+    radio.addEventListener("change", () => {
+      const status = document.querySelector('input[name="p2CrossingStatus"]:checked')?.value || "";
+      const attending = status === "I WILL CONVERGE";
+      attendingFields.classList.toggle("is-hidden", !attending);
+      document.querySelector("#p2PartySize").required = attending;
+      document.querySelectorAll('input[name="p2VariantStatus"]').forEach(input => input.required = attending);
+      if (!attending) variantFields.classList.add("is-hidden");
+    });
+  });
+
+  document.querySelectorAll('input[name="p2VariantStatus"]').forEach(radio => {
+    radio.addEventListener("change", () => {
+      const variantStatus = document.querySelector('input[name="p2VariantStatus"]:checked')?.value || "";
+      const declared = variantStatus === "DECLARED";
+      variantFields.classList.toggle("is-hidden", !declared);
+      document.querySelector("#p2Designation").required = declared;
+      document.querySelector("#p2Declaration").required = declared;
+      document.querySelector("#p2Species").required = declared;
+    });
+  });
+
+  p2PreviewForm.addEventListener("submit", event => {
+    event.preventDefault();
+
+    const firstName = document.querySelector("#p2FirstName").value.trim();
+    const lastName = document.querySelector("#p2LastName").value.trim();
+    const fullName = `${firstName} ${lastName}`.trim().toUpperCase();
+    const crossing = document.querySelector('input[name="p2CrossingStatus"]:checked')?.value || "";
+    const variantStatus = document.querySelector('input[name="p2VariantStatus"]:checked')?.value || "";
+
+    p2PreviewForm.classList.add("is-hidden");
+
+    ["#p2VariantSuccess","#p2PrimeSuccess","#p2DeclineSuccess"].forEach(id =>
+      document.querySelector(id)?.classList.add("is-hidden")
+    );
+
+    if (crossing === "I WILL NOT CONVERGE") {
+      document.querySelector("#p2DeclineSuccessName").textContent = fullName + " // CROSSING NOT EXPECTED";
+      document.querySelector("#p2DeclineSuccess").classList.remove("is-hidden");
+      document.querySelector("#p2DeclineSuccess").scrollIntoView({behavior:"smooth",block:"center"});
+    } else if (variantStatus === "PRIME") {
+      document.querySelector("#p2PrimeSuccessName").textContent = fullName + " // PRIME SIGNATURE CONFIRMED";
+      document.querySelector("#p2PrimeSuccess").classList.remove("is-hidden");
+      document.querySelector("#p2PrimeSuccess").scrollIntoView({behavior:"smooth",block:"center"});
+    } else {
+      document.querySelector("#p2VariantSuccessName").textContent = fullName + " // VARIANT SIGNATURE CONFIRMED";
+      document.querySelector("#p2VariantSuccess").classList.remove("is-hidden");
+      document.querySelector("#p2VariantSuccess").scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    glitchBurst(8);
+  });
+}

@@ -590,29 +590,29 @@ function configurePhase2PreviewMode() {
   document.body.classList.add("phase2-preview-mode");
 
   finalTransmission.innerHTML = `
-    <p class="section-kicker">COSMOLOGICAL EVENT DETECTED</p>
-    <h2>SUPERNOVA-CLASS SIGNATURE CONFIRMED</h2>
-    <div class="divider"></div>
-    <p class="label">ORIGIN UNIVERSE</p>
-    <p class="universe">MuSyChEN–626</p>
-    <div class="telemetry">
-      <p><span>Nexus topology:</span> <strong style="color:var(--green)">STABILISING</strong></p>
-      <p><span>Temporal solution:</span> <strong>RESOLVED</strong></p>
-      <p><span>Variant recognition:</span> <strong>AVAILABLE</strong></p>
+    <div class="phase2-alert-card">
+      <p class="section-kicker">COSMOLOGICAL EVENT DETECTED</p>
+      <h2>SUPERNOVA-CLASS SIGNATURE CONFIRMED</h2>
+      <div class="divider"></div>
+      <div class="telemetry">
+        <p><span>Nexus topology:</span> <strong style="color:var(--green)">STABILISING</strong></p>
+        <p><span>Temporal solution:</span> <strong>REFINING</strong></p>
+        <p><span>Variant recognition:</span> <strong>AVAILABLE</strong></p>
+      </div>
+      <p class="convergence">THE ORIGINAL TIMELINE HAS BEGUN TO TRANSFORM.</p>
+      <blockquote>
+        <p>Reality branches are collapsing toward a viable convergence window.</p>
+        <p>Final physical coordinates are still under negotiation.</p>
+        <p class="keyline">The Nexus can now distinguish incoming Variant identities.</p>
+      </blockquote>
+      <div class="calculation">
+        <span>ACTIVE TEMPORAL WINDOW</span>
+        <strong>18–19 DECEMBER 2026</strong>
+      </div>
+      <p class="do-not-close">VARIANT RECOGNITION PROTOCOL READY.</p>
+      <button id="phase2AccessButton" class="primary-button">[ ENTER CONVERGENCE CONTROL ]</button>
     </div>
-    <p class="convergence">A STABLE CONVERGENCE HAS BEEN IDENTIFIED.</p>
-    <blockquote>
-      <p>Initial signal mapping is complete.</p>
-      <p>Spacetime calculations have converged on a viable entry point.</p>
-      <p class="keyline">The Nexus is now capable of distinguishing incoming Variant identities.</p>
-    </blockquote>
-    <div class="calculation">
-      <span>CONVERGENCE DATE</span>
-      <strong>18 DECEMBER 2026</strong>
-    </div>
-    <p class="do-not-close">VARIANT RECOGNITION PROTOCOL READY.</p>
-    <button id="phase2AccessButton" class="primary-button">[ OPEN RECOGNITION PROTOCOL ]</button>
-  `;
+  `
 
   initializeButton.addEventListener("click", () => {
     setTimeout(() => {

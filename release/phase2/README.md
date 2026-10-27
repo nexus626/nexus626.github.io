@@ -1,28 +1,29 @@
-# MuSyChEN–626 Phase 2 production release
+# MuSyChEN–626 Phase 2 — LIVE
 
-Public site: https://nexus626.github.io/phase2.html
-Target tab: Variant Recognition Registry
+Main site: https://nexus626.github.io/
+Direct Phase 2: https://nexus626.github.io/phase2.html
 
-## Release status
-Prepared and locally tested. NOT activated until the Apps Script deployment exists and the six end-to-end tests are read back from Sheets.
+Released 27 October 2026. Registry service version 2 is active. The availability page is preserved as phase1-archive.html.
 
-## Deploy registry
-1. Create a new standalone Apps Script project and paste Phase2Registry.gs. This avoids changing the Phase 1 deployment.
-2. In Project Settings > Script properties set REGISTRY_ID to the existing private spreadsheet ID. Do not commit this value to GitHub. Deploy as Web app: execute as the spreadsheet owner, access Anyone. Approve the requested spreadsheet permission as the owner.
-3. Set the returned /exec URL in phase2-config.js (and the source HTML bundle), then rebuild the one-file page.
-4. Check /exec?action=health returns NEXUS_PHASE2.
-5. Submit the six payloads through the actual public page (not through the Sheets connector). Verify each matching request ID in column M and all values in columns A:L.
-6. Retry one request with the same request ID and verify there is no additional row. Test rejection of missing names, invalid party size, incomplete Variant details, and switching from Variant to Prime/decline.
-7. After readback succeeds, publish the bundled page to phase2.html and index.html. Preserve the Phase 1 files and existing registration data.
+## Verified behavior
+Six real cases have been submitted and read back from the Variant Recognition Registry:
+- DECLINE_SINGLE: no attendance, party 0, blank identity/passport.
+- DECLINE_AFTER_VARIANT: decline clears the prior Variant fields.
+- PRIME_SINGLE: Prime/Human, party 1, PENDING passport.
+- PRIME_PARTY: Prime/Human, party 2, PENDING passport.
+- VARIANT_SINGLE: all three identity fields, party 1, PENDING passport.
+- VARIANT_PARTY: all three identity fields, party 3, PENDING passport.
 
-The frontend does not show success for an opaque no-cors POST. It waits for a status callback from the registry confirming that the matching request ID is stored. Retries reuse the request ID. Only status/receipt data, not participant details, is exposed by the public status endpoint.
+The six retained rows are labelled TEST_PHASE2. Exclude these from guest counts. A separate browser smoke test confirmed the receipt after a real save; its temporary row was removed. Repeating a request ID did not create another row. The live service rejected missing names, zero or fractional party sizes, incomplete Variant details, and unknown crossing statuses.
 
-## Six real-record cases
-- TEST_PHASE2 / DECLINE_SINGLE: not attending, party 0, no identity, no passport.
-- TEST_PHASE2 / DECLINE_AFTER_VARIANT: decline after filling Variant fields; stored identity blank.
-- TEST_PHASE2 / PRIME_SINGLE: Prime, party 1, Human.
-- TEST_PHASE2 / PRIME_PARTY: Prime, party 2, Human.
-- TEST_PHASE2 / VARIANT_SINGLE: declared Variant, party 1, all three fields.
-- TEST_PHASE2 / VARIANT_PARTY: declared Variant, party 3, all three fields.
+Passport Status uses the existing PENDING / PRINTED dropdown; non-attendance leaves it blank. Request ID is a hidden technical field, not a passport number. The frontend waits for confirmation that the exact request ID exists before showing success. Guests sharing a device keep distinct personal Nexus identifiers.
 
-Local validation: node test-registry.cjs. These local tests use a mock spreadsheet and do not constitute a live Sheets test.
+## Files
+- Phase2Registry.gs: deployed backend; REGISTRY_ID is configured privately in Script properties.
+- phase2-config.js: public web-app endpoint configuration.
+- registry-client.js: POST and save-receipt handling.
+- ui.js, effects.js, nova.js, style.css: source modules.
+- phase2-ready.html: self-contained final page, identical to the main published page.
+- test-registry.cjs: local validation and duplicate checks; run with node.
+
+No prototype or simulated submissions remain on the live page. Arrival time remains pending by design.

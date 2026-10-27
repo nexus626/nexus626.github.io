@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#03050a" />
+  <title>MuSyChEN–626 // Anomaly Detected</title>
+  <link rel="stylesheet" href="styles.css?v=2.1-control-room" />
+</head>
+<body>
+  <div id="supernovaBurst" class="supernova-burst" aria-hidden="true"></div>
+  <canvas id="codeRain" aria-hidden="true"></canvas>
+  <div class="side-fade" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <aside id="leftRail" class="compile-rail left" aria-hidden="true"></aside>
+  <aside id="rightRail" class="compile-rail right" aria-hidden="true"></aside>
+
+  <div id="bootGate" class="boot-gate">
+    <div class="boot-box">
+      <p class="boot-id">SIGNAL // MuSyChEN–626</p>
+      <h1>INCOMING<br>TRANSMISSION</h1>
+      <p class="boot-copy">An anomalous interdimensional signal has been detected.</p>
+      <button id="initializeButton" class="primary-button">[ INITIALIZE TRANSMISSION ]</button>
+      <p class="micro">Audio-enabled // secure channel</p>
+    </div>
+  </div>
+
+  <main id="site" class="site hidden-site">
+    <section class="transmission-shell">
+      <div class="statusbar">
+        <span>INTERDIMENSIONAL MONITORING SYSTEM</span>
+        <span class="live"><i></i> SIGNAL ACTIVE</span>
+      </div>
+
+      <div class="terminal">
+        <div id="compileOutput" class="compile-output"></div>
+
+        <div id="finalTransmission" class="final-transmission is-hidden">
+          <p class="warning">⚠ WARNING ⚠</p>
+          <h2>TIME–SPACE ANOMALY DETECTED</h2>
+
+          <div class="divider"></div>
+
+          <p class="label">ORIGIN UNIVERSE</p>
+          <p class="universe">MuSyChEN–626</p>
+
+          <div class="telemetry">
+            <p><span>Dimensional integrity:</span> <strong class="unstable">UNSTABLE</strong></p>
+            <p><span>Nexus connection:</span> <strong>ESTABLISHED</strong></p>
+            <p><span>Unknown Variants detected:</span> <strong>IMPOSSIBLE TO DETERMINE</strong></p>
+          </div>
+
+          <p class="convergence">A CONVERGENCE IS IMMINENT.</p>
+
+          <blockquote>
+            <p>You are receiving this transmission because a version of you has been detected across the Nexus.</p>
+            <p>Current calculations indicate that, during the Convergence, you will come into contact with your Variant.</p>
+            <p class="keyline">For one night, the boundaries between who you are and who you could have been will cease to exist.</p>
+            <p>You are expected to converge with this alternate version of yourself and enter MuSyChEN–626 as a new Variant.</p>
+          </blockquote>
+
+          <div class="calculation">
+            <span>CONVERGENCE DATE</span>
+            <strong>PENDING CALCULATION<span class="blink">_</span></strong>
+          </div>
+
+          <p class="do-not-close">DO NOT CLOSE THIS TRANSMISSION.</p>
+          <button id="accessButton" class="primary-button">[ ACCESS THE NEXUS ]</button>
+        </div>
+      </div>
+
+      <footer>
+        <span>REALITY INDEX 626</span>
+        <button id="audioToggle" class="audio-toggle">AUDIO: ON</button>
+        <span id="clock"></span>
+      </footer>
+    </section>
+
+    <section id="registry" class="registry is-hidden">
+      <div class="registry-head">
+        <p class="section-kicker">NEXUS ACCESS GRANTED</p>
+        <h2>CROSSING AUTHORIZATION</h2>
+        <p>Your presence signal must be registered before the Convergence.</p>
+      </div>
+
+      <form id="variantForm">
+        <fieldset class="form-step active">
+          <legend>01 // SIGNAL RESPONSE</legend>
+
+          <div class="name-grid">
+            <label>
+              FIRST NAME
+              <input id="guestFirstName" type="text" placeholder="First name" required />
+            </label>
+
+            <label>
+              LAST NAME
+              <input id="guestLastName" type="text" placeholder="Last name" required />
+            </label>
+          </div>
+
+          <div class="question">
+            <p>CROSSING STATUS</p>
+            <p class="helper">Tell the Nexus whether a crossing remains possible in your timeline.</p>
+
+            <div class="choice-grid">
+              <label class="choice">
+                <input type="radio" name="phase1CrossingStatus" value="POSSIBLE" required>
+                <span>I MAY CROSS THE NEXUS</span>
+              </label>
+
+              <label class="choice">
+                <input type="radio" name="phase1CrossingStatus" value="NOT ATTENDING">
+                <span>I WILL NOT CROSS THE NEXUS</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="phase1AttendanceDetails">
+            <label>
+              EXPECTED CROSSING PARTY
+              <input id="partySize" type="number" min="1" max="10" value="1" required />
+              <small class="field-note">Total expected number of people, including you.</small>
+            </label>
+
+            <div class="question">
+              <p>TEMPORAL COMPATIBILITY SCAN</p>
+            <p class="helper">
+              Current calculations identify 10–19 December 2026 as possible Convergence dates.
+              Select <strong>every date</strong> on which your timeline could allow you to attend.
+            </p>
+
+            <div class="date-grid">
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-10"><span><strong>10</strong><small>THU</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-11"><span><strong>11</strong><small>FRI</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-12"><span><strong>12</strong><small>SAT</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-13"><span><strong>13</strong><small>SUN</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-14"><span><strong>14</strong><small>MON</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-15"><span><strong>15</strong><small>TUE</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-16"><span><strong>16</strong><small>WED</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-17"><span><strong>17</strong><small>THU</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-18"><span><strong>18</strong><small>FRI</small></span></label>
+              <label class="date-choice"><input type="checkbox" name="dates" value="2026-12-19"><span><strong>19</strong><small>SAT</small></span></label>
+            </div>
+
+            <p id="dateValidation" class="validation-message is-hidden">
+              Select at least one compatible date before registering your signal.
+            </p>
+          </div>
+
+          <div class="question">
+            <p>BIOLOGICAL COMPATIBILITY // FOOD PROTOCOL</p>
+            <p class="helper">Select every option that applies.</p>
+
+            <div class="choice-grid compact">
+              <label class="choice">
+                <input type="checkbox" name="diet" value="VEGAN">
+                <span>VEGAN</span>
+              </label>
+
+              <label class="choice">
+                <input type="checkbox" name="diet" value="VEGETARIAN">
+                <span>VEGETARIAN</span>
+              </label>
+
+              <label class="choice">
+                <input type="checkbox" name="diet" value="CELIAC / STRICT GLUTEN-FREE">
+                <span>CELIAC / STRICT GLUTEN-FREE</span>
+              </label>
+
+              <label class="choice">
+                <input type="checkbox" name="diet" value="OMNIVORE">
+                <span>OMNIVORE</span>
+              </label>
+            </div>
+          </div>
+
+            <label>
+              ALLERGIES / INTOLERANCES / OTHER FOOD REQUIREMENTS
+              <textarea id="foodNotes" rows="3" placeholder="Please include anything relevant for you or accompanying guests."></textarea>
+            </label>
+          </div>
+
+          <label class="privacy-consent">
+            <input id="privacyConsent" type="checkbox" required>
+            <span>I understand that my response, name, party size, date availability and food requirements will be used only to organise the MuSyChEN–626 event.</span>
+          </label>
+
+          <button type="submit" class="primary-button">[ REGISTER SIGNAL ]</button>
+        </fieldset>
+      </form>
+
+      <div id="clearanceCard" class="clearance-card is-hidden">
+        <p class="section-kicker">SIGNAL REGISTERED</p>
+        <p class="clearance-label">TEMPORARY NEXUS ID</p>
+        <h3 id="variantId">VAR–626–0000</h3>
+        <p id="clearanceName"></p>
+        <p>Your presence signal has been indexed.</p>
+        <p class="clearance-copy">Further identity documentation is not yet available. Await a future transmission as the Convergence approaches.</p>
+        <p class="micro">NEXUS CLEARANCE // LEVEL 01</p>
+      </div>
+
+      <div id="declineCard" class="clearance-card is-hidden">
+        <p class="section-kicker">SIGNAL RECEIVED</p>
+        <p class="clearance-label">CROSSING STATUS</p>
+        <h3>NO CONVERGENCE EXPECTED</h3>
+        <p id="declineName"></p>
+        <p class="clearance-copy">
+          Your non-attendance signal has been registered successfully.
+          No further action is required for this transmission.
+        </p>
+        <p class="micro">NEXUS REGISTRY // RESPONSE ARCHIVED</p>
+      </div>
+
+      <p id="storageStatus" class="micro">NEXUS DATABASE // PRIVATE ACCESS REGISTRY LINKED</p>
+
+      <div id="recognitionCenter" class="recognition-center offline">
+        <div class="recognition-statusbar">
+          <span>VARIANT RECOGNITION CENTER</span>
+          <span id="recognitionStatus" class="offline-status">● OFFLINE</span>
+        </div>
+
+        <div id="recognitionOffline" class="recognition-body">
+          <p class="section-kicker">IDENTITY DOCUMENTATION FACILITY</p>
+          <h2>VARIANT RECOGNITION CENTER</h2>
+
+          <p class="recognition-warning">CRITICAL SPACETIME INSTABILITY DETECTED</p>
+          <p class="recognition-reason">CROSS-REALITY IDENTIFICATION CURRENTLY IMPOSSIBLE</p>
+
+          <p class="recognition-copy">
+            Incoming Variant signatures are overlapping with their MuSyChEN–626 counterparts.
+            The Nexus cannot yet reconstruct stable cross-reality identities.
+          </p>
+
+          <div class="document-list">
+            <div class="document-row">
+              <span>NEXUS ID VERIFICATION</span>
+              <strong>PENDING</strong>
+            </div>
+            <div class="document-row">
+              <span>FINAL CROSSING STATUS</span>
+              <strong>PENDING</strong>
+            </div>
+            <div class="document-row">
+              <span>VARIANT DECLARATION</span>
+              <strong>UNRESOLVED</strong>
+            </div>
+            <div class="document-row">
+              <span>SPECIES CLASSIFICATION</span>
+              <strong>UNRESOLVED</strong>
+            </div>
+            <div class="document-row">
+              <span>INTERDIMENSIONAL PASSPORT</span>
+              <strong>CANNOT BE ISSUED</strong>
+            </div>
+          </div>
+
+          <div class="pending-terminal">
+            <span>NEXT RECOGNITION ATTEMPT</span>
+            <strong>AWAITING CONVERGENCE STABILISATION<span class="blink">_</span></strong>
+          </div>
+
+          <p class="recognition-copy">
+            Further calculations are required. Recognition procedures will resume only when
+            the Convergence is sufficiently close for Variant signatures to stabilise.
+          </p>
+
+          <button class="locked-button" type="button" disabled>[ RECOGNITION SYSTEM OFFLINE ]</button>
+        </div>
+
+        <div id="recognitionOperational" class="recognition-body is-hidden">
+          <p class="section-kicker operational-kicker">IDENTITY SIGNAL STABILISED</p>
+          <h2>VARIANT RECOGNITION CENTER</h2>
+
+          <p class="operational-message">RECOGNITION PROCEDURES AVAILABLE</p>
+
+          <form id="phase2Form">
+            <div class="name-grid">
+              <label>
+                FIRST NAME
+                <input id="phase2FirstName" type="text" placeholder="First name" required />
+              </label>
+
+              <label>
+                LAST NAME
+                <input id="phase2LastName" type="text" placeholder="Last name" required />
+              </label>
+            </div>
+
+            <div class="auto-id-panel">
+              <span>NEXUS ID</span>
+              <strong id="phase2NexusDisplay">AUTO-RESOLVING...</strong>
+              <small>The recognition link identifies your Phase 1 record automatically.</small>
+            </div>
+            <input id="phase2NexusId" type="hidden" />
+
+            <div class="question">
+              <p>FINAL CROSSING STATUS</p>
+              <div class="choice-grid">
+                <label class="choice">
+                  <input type="radio" name="crossingStatus" value="I WILL CONVERGE" required>
+                  <span>I WILL CONVERGE</span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="crossingStatus" value="I WILL NOT CONVERGE">
+                  <span>I WILL NOT CONVERGE</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="phase2PartySizeWrap">
+              <label>
+                FINAL CROSSING PARTY
+                <input id="phase2PartySize" type="number" min="1" max="10" value="1" />
+                <small class="field-note">Total number of people attending, including you.</small>
+              </label>
+            </div>
+
+            <div id="variantDeclarationFields">
+              <label>
+                VARIANT DECLARATION
+                <input id="variantDeclaration" type="text" placeholder="Who will cross the Nexus?" />
+              </label>
+
+              <label>
+                SPECIES CLASSIFICATION
+                <input id="speciesClassification" type="text" placeholder="Describe your Variant species / nature in your own words" />
+              </label>
+            </div>
+
+            <label class="privacy-consent">
+              <input id="phase2Consent" type="checkbox" required>
+              <span>I understand that these details will be used to confirm attendance, final party size and prepare the Interdimensional Passport.</span>
+            </label>
+
+            <button type="submit" class="primary-button">[ COMPLETE RECOGNITION ]</button>
+          </form>
+
+          <div id="phase2Success" class="clearance-card is-hidden">
+            <p class="section-kicker">VARIANT RECOGNISED</p>
+            <h3>IDENTITY STABILISED</h3>
+            <p>Your recognition record has been transmitted.</p>
+            <p class="micro">NEXUS CLEARANCE // LEVEL 02</p>
+          </div>
+
+          <p id="phase2StorageStatus" class="prototype-warning">
+            Recognition database status: DORMANT ENDPOINT.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="phase2Preview" class="phase2-preview control-room is-hidden">
+      <div class="phase2-topnav">
+        <div class="brand-lockup">
+          <span class="brand-glyph">◉</span>
+          <div><strong>MuSyChEN–626</strong><small>MULTIVERSE CHRISTMAS EXPEDITION</small></div>
+        </div>
+        <div class="nav-strip">
+          <span>01_HOME</span><span>02_TRANSMISSION</span><span class="active">03_EVENT</span><span>04_VARIANTS</span><span>05_RSVP</span>
+        </div>
+        <div class="phase-badge"><i></i> PHASE 2 // PREVIEW</div>
+      </div>
+
+      <div class="control-grid">
+        <aside class="hud-column hud-left">
+          <div class="hud-panel">
+            <div class="hud-title">&gt; MULTIVERSE LOGS [LIVE]</div>
+            <div class="hud-log">
+              <span>19:14:03 // NEXUS PING</span>
+              <span>19:14:11 // REALITY SYNC</span>
+              <span>19:14:22 // VARIANT SCAN</span>
+              <span>19:15:01 // GRAVITY ANOMALY</span>
+              <span>19:15:26 // TIMELINE DISTORTION</span>
+              <span class="alert-line">19:15:43 // SUPERNOVA SIGNATURE</span>
+              <span class="alert-line">19:15:44 // INSTABILITY CASCADE</span>
+              <span>19:16:07 // NEXUS TOPOLOGY STABLE</span>
+              <span>19:16:22 // TEMPORAL SOLUTION PARTIAL</span>
+            </div>
+          </div>
+          <div class="hud-panel">
+            <div class="hud-title">SIGNAL SPECTRUM</div>
+            <div class="signal-wave" aria-hidden="true"></div>
+            <div class="hud-stats"><span>Δt <strong>0.32s</strong></span><span>NOISE <strong>HIGH</strong></span></div>
+          </div>
+          <div class="hud-panel">
+            <div class="hud-title">DIMENSIONAL FEED</div>
+            <div class="mini-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="hud-copy">SCAN 626-A<br>SUPERNOVA CLASS<br>SPECTRAL MATCH 99.4%<br>REALITY BRANCHES: ∞</div>
+          </div>
+        </aside>
+
+        <div class="cosmic-stage">
+          <div class="hazard-banner">
+            <span class="hazard-icon">!</span>
+            <div><strong>COSMOLOGICAL EVENT DETECTED</strong><small>SUPERNOVA-CLASS SIGNATURE CONFIRMED</small></div>
+          </div>
+
+          <div class="space-window" aria-hidden="true">
+            <div class="nebula nebula-a"></div>
+            <div class="nebula nebula-b"></div>
+            <div class="supernova-core"></div>
+            <div class="nova-ring ring-one"></div>
+            <div class="nova-ring ring-two"></div>
+            <div class="nova-ring ring-three"></div>
+            <div class="starfield starfield-one"></div>
+            <div class="starfield starfield-two"></div>
+            <div class="debris debris-a"></div>
+            <div class="debris debris-b"></div>
+            <div class="crosshair"></div>
+          </div>
+
+          <div class="event-overlay">
+            <div class="event-status-row">
+              <div><span>NEXUS TOPOLOGY</span><strong>// STABILISING</strong></div>
+              <div><span>TEMPORAL SOLUTION</span><strong>// REFINING</strong></div>
+            </div>
+
+            <div class="event-title">
+              <p>CONVERGENCE PROTOCOL // PHASE 2 PREVIEW</p>
+              <h2>THE NEXUS IS TAKING FORM</h2>
+              <small>MULTIVERSES ALIGN // REALITIES INTERSECT // VARIANT SIGNALS INCOMING</small>
+            </div>
+
+            <div class="resolved-telemetry cinematic">
+              <div>
+                <span>CONVERGENCE WINDOW</span>
+                <strong>18–19 DECEMBER 2026</strong>
+                <small>FINAL DATE UNDER RESOLUTION</small>
+              </div>
+              <div>
+                <span>ENTRY POINT</span>
+                <strong>UNDER NEGOTIATION</strong>
+                <small>TORINO // PHYSICAL NEXUS PENDING</small>
+              </div>
+              <div>
+                <span>TEMPORAL ENTRY HOUR</span>
+                <strong class="pending-value">PENDING<span class="blink">_</span></strong>
+                <small>FINAL SYNCHRONIZATION IN PROGRESS</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hud-column hud-right">
+          <div class="hud-panel">
+            <div class="hud-title">COSMIC EVENT MONITOR</div>
+            <div class="event-meter"><span>RADIATION</span><b style="--meter:93%"></b><em>MAX</em></div>
+            <div class="event-meter"><span>GRAVITY</span><b style="--meter:71%"></b><em>FLUCTUATING</em></div>
+            <div class="event-meter"><span>REALITY</span><b style="--meter:58%"></b><em>UNSTABLE</em></div>
+            <div class="event-meter"><span>NEXUS</span><b style="--meter:84%"></b><em>LOCKING</em></div>
+          </div>
+          <div class="hud-panel reality-stream">
+            <div class="hud-title">&gt; REALITY STREAM [ACTIVE]</div>
+            <div class="matrix-mini">0 1 6 2 6 Ξ Δ 0 1<br>VARIANT PRIME Ω<br>REALITIES COLLIDE<br>STARS COLLAPSE<br>WORLDS REALIGN<br>CHRISTMAS PERSISTS<br>&gt;&gt;&gt;</div>
+          </div>
+          <div class="hud-panel">
+            <div class="hud-title">SYSTEM INSTABILITY</div>
+            <div class="warning-list">
+              <span>DIMENSIONAL NOISE <b>HIGH</b></span>
+              <span>TIMELINE FLUCTUATION <b>HIGH</b></span>
+              <span>REALITY ANCHOR <b>UNSTABLE</b></span>
+              <span>NEXUS INTEGRITY <b>84%</b></span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="phase2-system-strip">
+        <span>REALITY BREACH // CONTAINED</span>
+        <strong>VARIANT RECOGNITION PROTOCOL AVAILABLE</strong>
+        <span>FINAL COORDINATES // PENDING</span>
+      </div>
+
+      <div class="recognition-console cinematic-console">
+        <div class="recognition-console-head">
+          <span>VARIANT RECOGNITION PROTOCOL</span>
+          <span>IDENTITY CHANNEL // OPEN</span>
+        </div>
+
+        <div class="variant-explainer">
+          <p class="phase2-kicker">WHAT IS A VARIANT?</p>
+          <h3>ANOTHER POSSIBLE VERSION OF YOU.</h3>
+          <p>
+            A Variant is another version of yourself from another universe: magical, historical,
+            futuristic, monstrous, cosmic, absurd, or inspired by an existing fictional universe.
+          </p>
+          <p class="variant-keyline">
+            You are not simply dressing as a character. You are imagining
+            <strong>who you might have become somewhere else in the Multiverse.</strong>
+          </p>
+          <div class="variant-examples">
+            <span>YOU AS A WINX FAIRY</span>
+            <span>YOU AS A VAMPIRE</span>
+            <span>YOU AS A MEDIEVAL ALCHEMIST</span>
+            <span>YOU AS A CYBERPUNK SCIENTIST</span>
+            <span>YOU AS A WITCH</span>
+            <span>YOU FROM A TIMELINE WHERE ONE DECISION CHANGED EVERYTHING</span>
+          </div>
+          <p class="prime-note">
+            Costumes are encouraged, never mandatory. If you prefer not to dress up,
+            select <strong>REMAIN PRIME</strong>.
+          </p>
+        </div>
+
+        <form id="phase2PreviewForm" class="phase2-form">
+          <fieldset>
+            <legend>01 // IDENTITY CHECK</legend>
+            <div class="name-grid">
+              <label>FIRST NAME<input id="p2FirstName" type="text" placeholder="First name" required /></label>
+              <label>LAST NAME<input id="p2LastName" type="text" placeholder="Last name" required /></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>02 // FINAL CROSSING STATUS</legend>
+            <div class="choice-grid recognition-cards">
+              <label class="choice phase2-choice status-card converge-card">
+                <input type="radio" name="p2CrossingStatus" value="I WILL CONVERGE" required>
+                <span><strong>I WILL CONVERGE</strong><small>Confirm your presence in this timeline.</small></span>
+              </label>
+              <label class="choice phase2-choice status-card decline-card">
+                <input type="radio" name="p2CrossingStatus" value="I WILL NOT CONVERGE">
+                <span><strong>I WILL NOT CONVERGE</strong><small>I cannot join this iteration, but my signal remains.</small></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div id="p2AttendingFields" class="is-hidden">
+            <fieldset>
+              <legend>03 // CROSSING PARTY</legend>
+              <label>FINAL CROSSING PARTY
+                <input id="p2PartySize" type="number" min="1" max="10" value="1" />
+                <small class="field-note">Total number of travellers attending, including you.</small>
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>04 // VARIANT STATUS</legend>
+              <p class="helper">Choose how your identity will cross the Nexus.</p>
+              <div class="choice-grid recognition-cards">
+                <label class="choice phase2-choice status-card variant-card">
+                  <input type="radio" name="p2VariantStatus" value="DECLARED">
+                  <span><strong>DECLARE A VARIANT</strong><small>Attending as an alternate version of myself.</small></span>
+                </label>
+                <label class="choice phase2-choice status-card prime-card">
+                  <input type="radio" name="p2VariantStatus" value="PRIME">
+                  <span><strong>REMAIN PRIME</strong><small>I am still me in this timeline.</small></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset id="p2VariantFields" class="variant-fields is-hidden">
+              <legend>05 // VARIANT DECLARATION</legend>
+              <label>VARIANT DESIGNATION
+                <input id="p2Designation" type="text" placeholder="e.g. RED FAIRY VARIANT / VAMPIRE RESEARCHER" />
+                <small class="field-note">A short designation for the version of you crossing the Nexus.</small>
+              </label>
+              <label>VARIANT DECLARATION
+                <textarea id="p2Declaration" rows="5" placeholder="Describe the version of yourself that will cross the Nexus."></textarea>
+              </label>
+              <label>SPECIES / NATURE
+                <input id="p2Species" type="text" placeholder="e.g. Fairy / Human / Witch / Vampire / Android / Unknown entity" />
+              </label>
+            </fieldset>
+          </div>
+
+          <label class="privacy-consent">
+            <input id="p2Consent" type="checkbox" required>
+            <span>I understand that these details will be used to confirm attendance and prepare physical documentation for the Convergence.</span>
+          </label>
+
+          <p class="preview-warning">PREVIEW MODE // DATABASE TRANSMISSION DISABLED</p>
+          <button type="submit" class="primary-button phase2-submit">[ TRANSMIT IDENTIFICATION ]</button>
+        </form>
+
+        <div id="p2VariantSuccess" class="phase2-result is-hidden">
+          <p class="phase2-kicker">VARIANT RECOGNISED</p><h3>IDENTITY SIGNATURE STABILISED</h3>
+          <p id="p2VariantSuccessName"></p>
+          <div class="passport-authorization"><span>INTERDIMENSIONAL PASSPORT</span><strong>AUTHORIZED FOR PHYSICAL ISSUANCE</strong></div>
+          <p>Physical documentation will be issued at the Convergence.</p>
+          <p class="preview-warning">PREVIEW MODE // NO DATA WAS TRANSMITTED</p>
+        </div>
+
+        <div id="p2PrimeSuccess" class="phase2-result is-hidden">
+          <p class="phase2-kicker">PRIME IDENTITY CONFIRMED</p><h3>NO CROSS-REALITY DIVERGENCE DECLARED</h3>
+          <p id="p2PrimeSuccessName"></p>
+          <div class="passport-authorization"><span>INTERDIMENSIONAL PASSPORT</span><strong>AUTHORIZED FOR PHYSICAL ISSUANCE</strong></div>
+          <p>Physical documentation will be issued at the Convergence.</p>
+          <p class="preview-warning">PREVIEW MODE // NO DATA WAS TRANSMITTED</p>
+        </div>
+
+        <div id="p2DeclineSuccess" class="phase2-result is-hidden">
+          <p class="phase2-kicker">SIGNAL RECEIVED</p><h3>NO CONVERGENCE EXPECTED</h3>
+          <p id="p2DeclineSuccessName"></p>
+          <p>Your final crossing status has been archived. No further action is required.</p>
+          <p class="preview-warning">PREVIEW MODE // NO DATA WAS TRANSMITTED</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js?v=2.1-control-room"></script>
+
+  <script>
+    // Independent fallback for Phase 1 non-attendance responses.
+    // Runs in capture phase so this path does not depend on the external script.
+    (function () {
+      const form = document.getElementById("variantForm");
+      if (!form) return;
+
+      const endpoint = "https://script.google.com/macros/s/AKfycbzBLjE70e91YcfUS25snEoM4IAqVWGm67uXor1Sh328dkzDHj-N2b6HNrQpablru5rQ/exec";
+
+      form.addEventListener("submit", async function (event) {
+        const selected = document.querySelector('input[name="phase1CrossingStatus"]:checked');
+        if (!selected || selected.value !== "NOT ATTENDING") return;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        const firstName = (document.getElementById("guestFirstName")?.value || "").trim() || "UNKNOWN";
+        const lastName = (document.getElementById("guestLastName")?.value || "").trim() || "UNKNOWN";
+        const fullName = (firstName + " " + lastName).trim();
+
+        let id = "VAR-626-NOPE";
+        try {
+          const bytes = new Uint32Array(1);
+          crypto.getRandomValues(bytes);
+          id = "VAR-626-" + (bytes[0] % (36 ** 4)).toString(36).toUpperCase().padStart(4, "0");
+        } catch (_) {}
+
+        const payload = {
+          timestamp: new Date().toISOString(),
+          nexusId: id,
+          firstName,
+          lastName,
+          fullName,
+          crossingStatus: "NOT ATTENDING",
+          partySize: "0",
+          availableDates: [],
+          "2026-12-10": false,
+          "2026-12-11": false,
+          "2026-12-12": false,
+          "2026-12-13": false,
+          "2026-12-14": false,
+          "2026-12-15": false,
+          "2026-12-16": false,
+          "2026-12-17": false,
+          "2026-12-18": false,
+          "2026-12-19": false,
+          dietaryRequirements: "",
+          foodNotes: ""
+        };
+
+        localStorage.setItem("nexus626_non_attendance", JSON.stringify(payload));
+
+        let sent = false;
+        try {
+          await fetch(endpoint, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {"Content-Type":"text/plain;charset=utf-8"},
+            body: JSON.stringify(payload)
+          });
+          sent = true;
+        } catch (_) {}
+
+        form.classList.add("is-hidden");
+
+        const normalCard = document.getElementById("clearanceCard");
+        if (normalCard) normalCard.classList.add("is-hidden");
+
+        const declineCard = document.getElementById("declineCard");
+        const declineName = document.getElementById("declineName");
+        if (declineName) declineName.textContent = fullName.toUpperCase() + " // CROSSING NOT EXPECTED";
+        if (declineCard) {
+          declineCard.classList.remove("is-hidden");
+          declineCard.scrollIntoView({behavior:"smooth", block:"center"});
+        }
+
+        const status = document.getElementById("storageStatus");
+        if (status) {
+          status.textContent = sent
+            ? "NEXUS DATABASE // NON-ATTENDANCE SIGNAL TRANSMITTED"
+            : "NEXUS DATABASE // REMOTE LINK ERROR — LOCAL BACKUP CREATED";
+        }
+      }, true);
+    })();
+  </script>
+</body>
+</html>
